@@ -54,7 +54,7 @@
             background-color: #05070B;
             background-image: 
                 radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.08) 0%, transparent 60%),
-                radial-gradient(circle at 100% 50%, rgba(120, 0, 255, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 100% 50%, rgba(255, 34, 51, 0.04) 0%, transparent 50%),
                 radial-gradient(circle at 0% 80%, rgba(0, 255, 136, 0.04) 0%, transparent 50%);
             font-family: 'Inter', sans-serif;
             user-select: none;
@@ -102,6 +102,12 @@
             box-shadow: 0 8px 32px 0 rgba(0, 240, 255, 0.08);
         }
 
+        /* Red Dev Glow Badge */
+        .dev-badge-glow {
+            color: #FF2233;
+            text-shadow: 0 0 12px rgba(255, 34, 51, 0.7);
+        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 5px;
@@ -115,13 +121,13 @@
             border-radius: 9999px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #00FF88;
+            background: #FF2233;
         }
     </style>
 </head>
 <body class="text-slate-100 cyber-grid flex flex-col items-center justify-start min-h-screen px-3 py-4 md:px-6 md:py-8 pb-24">
 
-    <!-- Glowing Top Cyber Line -->
+    <!-- Glowing Top Cyber Line with Red/Cyan Gradient -->
     <div class="fixed top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#00F0FF] to-transparent z-50 opacity-90 shadow-[0_0_12px_#00F0FF]"></div>
 
     <!-- Notification Toast -->
@@ -132,71 +138,8 @@
         <span id="toast-text" class="font-rajdhani text-sm tracking-wider uppercase text-cyan-200">OTP Copied Successfully!</span>
     </div>
 
-    <!-- 🛡️ MANDATORY OTP GROUP VERIFICATION MODAL -->
-    <div id="group-gate-modal" class="fixed inset-0 bg-black/90 backdrop-blur-2xl z-50 flex items-center justify-center p-3 sm:p-4 transition-all duration-300 opacity-0 pointer-events-none scale-95">
-        <div class="w-full max-w-md bg-[#080C14] border-2 border-[#00F0FF]/40 rounded-2xl p-6 flex flex-col items-center text-center gap-4 shadow-[0_0_60px_rgba(0,240,255,0.25)] relative overflow-hidden">
-            
-            <!-- Background Glow -->
-            <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-48 h-48 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none"></div>
-
-            <!-- Shield Lock Icon -->
-            <div class="relative w-20 h-20 rounded-2xl bg-[#0D131F] border border-cyan-400/40 flex items-center justify-center text-cyan-400 text-3xl shadow-[0_0_25px_rgba(0,240,255,0.3)] mt-2">
-                <i class="fa-solid fa-shield-halved animate-pulse"></i>
-                <span class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-red-500 text-white text-xs flex items-center justify-center font-bold border-2 border-[#080C14]">
-                    <i class="fa-solid fa-lock text-[10px]"></i>
-                </span>
-            </div>
-
-            <!-- Title & Subtitle -->
-            <div>
-                <span class="text-[10px] font-mono tracking-widest uppercase text-cyan-400 font-bold bg-cyan-950/60 border border-cyan-800/50 px-2.5 py-0.5 rounded-full">
-                    MANDATORY ACCESS VERIFICATION
-                </span>
-                <h2 class="text-xl font-black font-orbitron text-white tracking-wider uppercase mt-2">
-                    JOIN OTP GROUP FIRST
-                </h2>
-                <p class="text-xs text-gray-300 mt-1.5 leading-relaxed">
-                    <b>Dark Booster Number Panel</b> ব্যবহার করতে হলে আপনাকে অবশ্যই আমাদের অফিসিয়াল ওটিপি গ্রুপে জয়েন থাকতে হবে।
-                </p>
-            </div>
-
-            <!-- Instruction Box -->
-            <div class="w-full bg-[#0D131F] border border-gray-800/80 rounded-xl p-3.5 text-left flex flex-col gap-2 font-mono text-xs">
-                <div class="flex items-start gap-2 text-cyan-300">
-                    <span class="font-bold text-sm">১.</span>
-                    <span>নিচের লিংকে ক্লিক করে <b>DARK BOSTER NUMBER OTP GROUP</b>-এ যুক্ত হোন।</span>
-                </div>
-                <div class="flex items-start gap-2 text-emerald-400">
-                    <span class="font-bold text-sm">২.</span>
-                    <span>জয়েন করার পর <b>'ভেরিফাই ও আনলক'</b> বাটনে ক্লিক করুন।</span>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="w-full flex flex-col gap-2.5 pt-1">
-                <a href="https://t.me/+koExPRjJH11iOTFl" target="_blank" onclick="markGroupJoinedClick()" 
-                   class="w-full bg-[#0088cc] hover:bg-[#0099e6] text-white font-black text-xs font-orbitron py-3 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-lg shadow-[#0088cc]/20 active:scale-98">
-                    <i class="fa-brands fa-telegram text-base"></i>
-                    <span>১. ওটিপি গ্রুপে জয়েন করুন</span>
-                </a>
-
-                <button onclick="verifyGroupAccess()" 
-                        class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-xs font-orbitron py-3 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-lg shadow-cyan-500/20 active:scale-98">
-                    <i class="fa-solid fa-circle-check text-sm"></i>
-                    <span>২. আমি জয়েন করেছি (VERIFY & UNLOCK)</span>
-                </button>
-            </div>
-
-            <!-- Error Notice -->
-            <p id="gate-error" class="hidden text-[11px] text-red-400 font-mono mt-1">
-                ⚠️ অনুগ্রহ করে আগে টেলিগ্রাম গ্রুপে জয়েন করুন!
-            </p>
-
-        </div>
-    </div>
-
     <!-- Live Available Ranges & Allocation Modal -->
-    <div id="traffic-modal" class="fixed inset-0 bg-black/85 backdrop-blur-xl z-40 flex items-center justify-center p-2 sm:p-4 opacity-0 pointer-events-none transition-all duration-300 scale-95">
+    <div id="traffic-modal" class="fixed inset-0 bg-black/85 backdrop-blur-xl z-50 flex items-center justify-center p-2 sm:p-4 opacity-0 pointer-events-none transition-all duration-300 scale-95">
         <div class="w-full max-w-2xl bg-[#080C14] border border-[#00F0FF]/30 rounded-2xl flex flex-col h-[92vh] max-h-[820px] shadow-[0_0_50px_rgba(0,240,255,0.2)] overflow-hidden">
             
             <!-- Modal Header -->
@@ -207,9 +150,10 @@
                         <div id="modal-title" class="text-xs sm:text-sm font-black font-orbitron tracking-wider text-white flex items-center gap-2">
                             AVAILABLE PLATFORM NETWORKS
                         </div>
-                        <div class="text-[10px] text-cyan-400/80 font-mono flex items-center gap-1.5 mt-0.5">
+                        <div class="text-[10px] text-cyan-400/80 font-mono flex items-center gap-2 mt-0.5">
                             <span class="w-1.5 h-1.5 rounded-full bg-[#00FF88] inline-block animate-ping"></span>
-                            DARK BOOSTER CYBER CORE
+                            <span>DARK BOOSTER CYBER CORE</span>
+                            <span class="text-[#FF2233] font-bold">• DEV: SHARIYA SUNNY</span>
                         </div>
                     </div>
                 </div>
@@ -239,7 +183,7 @@
                         <span class="flex items-center gap-1.5 text-cyan-300">
                             <i class="fa-solid fa-globe text-xs"></i> Select Country to Allocate Number
                         </span>
-                        <span class="text-[9px] text-gray-500">Instant SMS Forward</span>
+                        <span class="text-[9px] text-[#FF2233] font-mono font-bold">DEV: SHARIYA SUNNY</span>
                     </div>
                     
                     <div id="modal-range-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 p-3 sm:p-4 overflow-y-auto flex-1 bg-[#05070B]/40 content-start">
@@ -268,11 +212,11 @@
     <div class="w-full max-w-lg flex flex-col gap-5">
         
         <!-- Header & Branding -->
-        <header class="flex flex-col items-center text-center gap-3 pt-2">
+        <header class="flex flex-col items-center text-center gap-2.5 pt-2">
             
             <!-- Glowing Logo Container -->
             <div class="relative group cursor-pointer">
-                <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-600 to-emerald-400 rounded-3xl blur-md opacity-40 group-hover:opacity-75 transition duration-500"></div>
+                <div class="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-600 to-[#FF2233] rounded-3xl blur-md opacity-40 group-hover:opacity-75 transition duration-500"></div>
                 <div class="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-[#080C14] border border-cyan-400/40 p-1 flex items-center justify-center overflow-hidden shadow-2xl">
                     <img src="logo.png" alt="Dark Booster Logo" class="w-full h-full object-contain cyber-logo-glow">
                 </div>
@@ -286,15 +230,22 @@
                         V3.4 • PRO EDITION
                     </span>
                 </div>
+                
                 <h1 class="text-2xl sm:text-3xl font-black font-orbitron tracking-wider cyber-title uppercase">
                     DARK BOOSTER
                 </h1>
+                
                 <p class="text-xs font-rajdhani font-bold tracking-widest text-gray-300 uppercase mt-0.5">
                     NUMBER PANEL • AUTOMATED OTP GATEWAY
                 </p>
-                <p class="text-[11px] text-gray-500 max-w-sm mt-1">
-                    High-speed virtual number allocation & automated Telegram forwarding system
-                </p>
+
+                <!-- 👑 DEVELOPER: SHARIYA SUNNY (RED MARK) -->
+                <div class="mt-1.5 flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-950/50 border border-red-700/60 shadow-[0_0_15px_rgba(255,34,51,0.3)]">
+                    <i class="fa-solid fa-code text-[#FF2233] text-xs"></i>
+                    <span class="text-xs font-mono font-black tracking-wider text-[#FF2233] dev-badge-glow uppercase">
+                        Developer: Shariya Sunny
+                    </span>
+                </div>
             </div>
 
             <!-- Quick Action Links / Badges -->
@@ -304,13 +255,15 @@
                     <i class="fa-brands fa-telegram text-sm text-[#29b6f6]"></i>
                     <span>Official OTP Group</span>
                 </a>
+                
                 <div class="bg-gray-900/60 border border-gray-800 text-gray-300 px-3 py-1.5 rounded-xl text-xs font-mono flex items-center gap-1.5">
                     <i class="fa-solid fa-signal text-emerald-400 text-[10px]"></i>
                     <span class="text-emerald-400 font-bold">Online</span>
                 </div>
-                <div id="verified-status-badge" class="bg-emerald-950/30 border border-emerald-800/40 text-emerald-300 px-3 py-1.5 rounded-xl text-xs font-mono flex items-center gap-1.5">
-                    <i class="fa-solid fa-shield-check text-[#00FF88] text-[10px]"></i>
-                    <span id="verified-status-text">Verified Member</span>
+
+                <div class="bg-red-950/40 border border-red-800/60 text-[#FF2233] px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 shadow-[0_0_10px_rgba(255,34,51,0.25)]">
+                    <i class="fa-solid fa-crown text-[#FF2233] text-xs"></i>
+                    <span>Shariya Sunny</span>
                 </div>
             </div>
 
@@ -329,7 +282,7 @@
         <div class="cyber-card rounded-2xl p-4 sm:p-5 flex flex-col gap-2.5">
             <label class="text-[10px] text-cyan-400 font-bold font-orbitron tracking-wider flex items-center justify-between">
                 <span><i class="fa-solid fa-magnifying-glass mr-1.5"></i> SEARCH YOUR NUMBER</span>
-                <span class="text-[9px] text-gray-500 font-mono">Real-time Filter</span>
+                <span class="text-[9px] text-[#FF2233] font-mono font-bold">BY SHARIYA SUNNY</span>
             </label>
             <div class="relative group">
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-400 group-focus-within:text-white transition-colors duration-300 text-xs">
@@ -360,7 +313,7 @@
             <div class="grid grid-cols-2 gap-3.5">
                 
                 <!-- Facebook Card -->
-                <div onclick="checkAndOpenTrafficModal('facebook')" class="cursor-pointer bg-[#0A0F1A] hover:bg-[#0E1524] border border-gray-800/80 hover:border-[#1877F2]/60 rounded-xl p-3.5 flex flex-col justify-between gap-3 relative overflow-hidden transition-all duration-300 active:scale-[0.98] group shadow-lg">
+                <div onclick="openTrafficModal('facebook')" class="cursor-pointer bg-[#0A0F1A] hover:bg-[#0E1524] border border-gray-800/80 hover:border-[#1877F2]/60 rounded-xl p-3.5 flex flex-col justify-between gap-3 relative overflow-hidden transition-all duration-300 active:scale-[0.98] group shadow-lg">
                     <div class="flex justify-between items-center z-10">
                         <span class="text-xs font-bold text-gray-200 flex items-center gap-1.5 font-rajdhani tracking-wider">
                             <i class="fa-brands fa-facebook text-[#1877F2] text-sm"></i> Facebook
@@ -383,7 +336,7 @@
                 </div>
 
                 <!-- Instagram Card -->
-                <div onclick="checkAndOpenTrafficModal('instagram')" class="cursor-pointer bg-[#0A0F1A] hover:bg-[#180F1D] border border-gray-800/80 hover:border-[#E1306C]/60 rounded-xl p-3.5 flex flex-col justify-between gap-3 relative overflow-hidden transition-all duration-300 active:scale-[0.98] group shadow-lg">
+                <div onclick="openTrafficModal('instagram')" class="cursor-pointer bg-[#0A0F1A] hover:bg-[#180F1D] border border-gray-800/80 hover:border-[#E1306C]/60 rounded-xl p-3.5 flex flex-col justify-between gap-3 relative overflow-hidden transition-all duration-300 active:scale-[0.98] group shadow-lg">
                     <div class="flex justify-between items-center z-10">
                         <span class="text-xs font-bold text-gray-200 flex items-center gap-1.5 font-rajdhani tracking-wider">
                             <i class="fa-brands fa-instagram text-[#E1306C] text-sm"></i> Instagram
@@ -408,7 +361,7 @@
             </div>
 
             <!-- Global / All Platforms Fast Allocation Button -->
-            <button onclick="checkAndOpenTrafficModal('all')" class="w-full bg-[#080C14] hover:bg-cyan-950/30 border border-cyan-500/30 hover:border-cyan-400 text-cyan-300 hover:text-white text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-sm">
+            <button onclick="openTrafficModal('all')" class="w-full bg-[#080C14] hover:bg-cyan-950/30 border border-cyan-500/30 hover:border-cyan-400 text-cyan-300 hover:text-white text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-sm">
                 <i class="fa-solid fa-layer-group text-cyan-400"></i>
                 <span class="font-orbitron text-[11px]">BROWSE ALL 35+ COUNTRY NETWORKS</span>
                 <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i>
@@ -458,12 +411,16 @@
             </div>
         </div>
 
-        <!-- Footer -->
-        <footer class="mt-4 pt-4 border-t border-gray-800/60 text-center flex flex-col items-center gap-2 text-gray-500 text-[11px]">
-            <div class="flex items-center gap-2 text-gray-400 font-mono text-[10px]">
-                <span>⚡ DARK BOOSTER SYSTEM</span>
+        <!-- Footer with Prominent Red Developer Mark -->
+        <footer class="mt-4 pt-5 border-t border-gray-800/60 text-center flex flex-col items-center gap-2 text-gray-400 text-xs">
+            <div class="flex items-center gap-2 text-sm font-mono font-black text-[#FF2233] tracking-widest dev-badge-glow">
+                <i class="fa-solid fa-crown text-[#FF2233]"></i>
+                <span>DEVELOPER: SHARIYA SUNNY</span>
+            </div>
+            <div class="flex items-center gap-2 text-gray-500 font-mono text-[10px]">
+                <span>⚡ DARK BOOSTER NUMBER PANEL</span>
                 <span>•</span>
-                <span>TELEGRAM BOT: @darkboosternumberpanalbot</span>
+                <span>BOT: @darkboosternumberpanalbot</span>
             </div>
             <p class="text-[10px] text-gray-600">
                 Encrypted Virtual Routing • Protected by Dark Booster Cyber Core
@@ -489,7 +446,8 @@
 
             // 🔗 Telegram Button Setup
             BUTTON_TEXT: "🚀 Join Dark Booster OTP Group",
-            MINI_BOT_URL: "https://t.me/darkboosternumberpanalbot"
+            MINI_BOT_URL: "https://t.me/darkboosternumberpanalbot",
+            DEVELOPER: "Shariya Sunny"
         };
         // =========================================================================
 
@@ -497,9 +455,6 @@
         let activeFbRanges = [];
         let activeIgRanges = [];
         let currentActiveApp = 'all';
-
-        let hasJoinedGroup = localStorage.getItem('db_group_verified') === 'true';
-        let userClickedGroupLink = false;
 
         let sentTelegramOtpKeys = new Set(JSON.parse(localStorage.getItem('sent_tg_otps') || "[]"));
 
@@ -530,7 +485,6 @@
                 const ctx = getAudioContext();
                 const now = ctx.currentTime;
 
-                // Main synthesizer laser chirp
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.type = "sawtooth";
@@ -543,7 +497,6 @@
                 osc.start(now);
                 osc.stop(now + 0.18);
 
-                // Sub harmonic
                 const osc2 = ctx.createOscillator();
                 const gain2 = ctx.createGain();
                 osc2.type = "sine";
@@ -566,11 +519,10 @@
                 const ctx = getAudioContext();
                 const now = ctx.currentTime;
 
-                // Chime Note 1 (High Crystal)
                 const osc1 = ctx.createOscillator();
                 const gain1 = ctx.createGain();
                 osc1.type = "sine";
-                osc1.frequency.setValueAtTime(880, now); // A5
+                osc1.frequency.setValueAtTime(880, now);
                 gain1.gain.setValueAtTime(0.18, now);
                 gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
                 osc1.connect(gain1);
@@ -578,11 +530,10 @@
                 osc1.start(now);
                 osc1.stop(now + 0.35);
 
-                // Chime Note 2 (Major Third Up - Celebratory)
                 const osc2 = ctx.createOscillator();
                 const gain2 = ctx.createGain();
                 osc2.type = "sine";
-                osc2.frequency.setValueAtTime(1320, now + 0.12); // E6
+                osc2.frequency.setValueAtTime(1320, now + 0.12);
                 gain2.gain.setValueAtTime(0.22, now + 0.12);
                 gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.55);
                 osc2.connect(gain2);
@@ -590,98 +541,12 @@
                 osc2.start(now + 0.12);
                 osc2.stop(now + 0.55);
 
-                // Telegram WebApp Haptic feedback if available
                 if (window.Telegram?.WebApp?.HapticFeedback) {
                     window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
                 }
             } catch (e) {
                 console.warn("Audio OTP arrival error:", e);
             }
-        }
-
-        // =========================================================================
-        // 🛡️ GATEKEEPER - MANDATORY GROUP JOIN SYSTEM
-        // =========================================================================
-        function checkGatekeeperStatus() {
-            const modal = document.getElementById('group-gate-modal');
-            const badge = document.getElementById('verified-status-badge');
-            const badgeText = document.getElementById('verified-status-text');
-
-            if (!hasJoinedGroup) {
-                if (modal) {
-                    modal.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
-                    modal.classList.add('opacity-100', 'scale-100');
-                }
-                if (badge) {
-                    badge.classList.remove('bg-emerald-950/30', 'border-emerald-800/40', 'text-emerald-300');
-                    badge.classList.add('bg-amber-950/30', 'border-amber-800/40', 'text-amber-300');
-                }
-                if (badgeText) badgeText.innerText = "Join Group to Unlock";
-            } else {
-                if (modal) {
-                    modal.classList.remove('opacity-100', 'scale-100');
-                    modal.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
-                }
-                if (badge) {
-                    badge.classList.remove('bg-amber-950/30', 'border-amber-800/40', 'text-amber-300');
-                    badge.classList.add('bg-emerald-950/30', 'border-emerald-800/40', 'text-emerald-300');
-                }
-                if (badgeText) badgeText.innerText = "Verified Member";
-            }
-        }
-
-        function markGroupJoinedClick() {
-            userClickedGroupLink = true;
-            const errEl = document.getElementById('gate-error');
-            if (errEl) errEl.classList.add('hidden');
-        }
-
-        async function verifyGroupAccess() {
-            const errEl = document.getElementById('gate-error');
-
-            // If inside Telegram WebApp, check with Telegram API
-            let tgUserId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
-            
-            if (tgUserId) {
-                try {
-                    const checkRes = await fetch(`https://api.telegram.org/bot${APP_CONFIG.BOT_TOKEN}/getChatMember?chat_id=${APP_CONFIG.GROUP_CHAT_ID}&user_id=${tgUserId}`);
-                    if (checkRes.ok) {
-                        const data = await checkRes.json();
-                        const status = data.result?.status;
-                        if (['creator', 'administrator', 'member', 'restricted'].includes(status)) {
-                            grantAccess();
-                            return;
-                        } else {
-                            if (errEl) {
-                                errEl.innerText = "❌ আপনি এখনো ওটিপি গ্রুপে জয়েন করেননি! আগে জয়েন করুন।";
-                                errEl.classList.remove('hidden');
-                            }
-                            return;
-                        }
-                    }
-                } catch (e) {
-                    console.warn("Telegram membership check fallback:", e);
-                }
-            }
-
-            // Normal browser fallback: Check if user interacted with link or confirm join
-            grantAccess();
-        }
-
-        function grantAccess() {
-            hasJoinedGroup = true;
-            localStorage.setItem('db_group_verified', 'true');
-            playAllocateSound();
-            checkGatekeeperStatus();
-            showCustomToast("🎉 Access Granted! Welcome to Dark Booster.");
-        }
-
-        function checkAndOpenTrafficModal(app) {
-            if (!hasJoinedGroup) {
-                checkGatekeeperStatus();
-                return;
-            }
-            openTrafficModal(app);
         }
 
         // =========================================================================
@@ -827,6 +692,7 @@
 📩 <b>SMS Body:</b>
 <i>${escapeHTML(rawSms)}</i>
 ━━━━━━━━━━━━━━━━━━━━━━
+👑 <b>Developer:</b> <b>Shariya Sunny</b>
 🛡️ <i>Elite Automated Gateway Forwarder</i>`;
 
             const payload = {
@@ -902,7 +768,6 @@
                                             s.sms = res.full_sms || `Your verification code is ${res.otp_code}`;
                                             updated = true;
 
-                                            // Telegram Push Notification
                                             const appDetails = getAppDetails(s.sms);
                                             const cInfo = getCountryInfo(s.full_number || s.country);
                                             sendOtpToTelegram({
@@ -911,7 +776,6 @@
                                                 time: Date.now()
                                             }, s.otp, appDetails, cInfo.fullText);
 
-                                            // Distinct Sound: Celebratory OTP Arrival Chime!
                                             playOtpArrivalSound();
                                         }
                                     }
@@ -929,7 +793,6 @@
                 }
             }
 
-            // Feed Render
             const feedItems = sessions.filter(s => s.otp && s.otp !== "------").map(s => ({
                 number: s.full_number,
                 message: s.sms || `Verification code: ${s.otp}`,
@@ -1182,11 +1045,6 @@
 
         // 4. Number Allocation Core via /getnum/number
         async function allocateNumberFromModal(range, btnElement) {
-            if (!hasJoinedGroup) {
-                checkGatekeeperStatus();
-                return;
-            }
-
             if (!APP_CONFIG.API_TOKEN) {
                 alert("API Token is missing. Please check configuration.");
                 return;
@@ -1242,7 +1100,6 @@
                 renderModalSessions();
                 fetchLatestSMS();
                 
-                // Distinct Sound: Cyber Laser Power-up!
                 playAllocateSound();
 
                 showCustomToast(`Allocated: ${fullNum}`);
@@ -1317,7 +1174,7 @@
             container.innerHTML = html;
         }
 
-        // Render Dynamic Feed Cards
+        // Render Dynamic Feed Cards with Red Developer Mark
         function renderSMSCards(smsList) {
             const container = document.getElementById('feed-container');
             const countBadge = document.getElementById('code-count');
@@ -1357,12 +1214,12 @@
                         
                         <!-- Top Meta Header -->
                         <div class="flex justify-between items-start border-b border-gray-800/80 pb-2.5">
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2 flex-wrap">
                                 <span class="text-[9px] text-cyan-300 bg-cyan-950/60 border border-cyan-800/40 px-2.5 py-0.5 rounded-full font-bold font-orbitron tracking-wider">
                                     DARK BOOSTER
                                 </span>
-                                <span class="text-[9px] text-[#00FF88] bg-emerald-950/40 border border-emerald-800/40 px-2 py-0.5 rounded-full font-bold font-mono">
-                                    VERIFIED
+                                <span class="text-[9px] text-[#FF2233] bg-red-950/50 border border-red-800/50 px-2.5 py-0.5 rounded-full font-bold font-mono dev-badge-glow">
+                                    DEV: SHARIYA SUNNY
                                 </span>
                             </div>
                             
@@ -1546,13 +1403,11 @@
 
         // Initialize & Poll
         window.onload = () => {
-            // Telegram WebApp Setup
             if (window.Telegram?.WebApp) {
                 window.Telegram.WebApp.ready();
                 window.Telegram.WebApp.expand();
             }
 
-            checkGatekeeperStatus();
             fetchAccessList();
             fetchConsoleTraffic();
             fetchLatestSMS();

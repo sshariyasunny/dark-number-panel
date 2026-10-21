@@ -1,8 +1,10 @@
 """
 DARK BOOSTER NUMBER PANEL - TELEGRAM BOT DAEMON
 Automated OTP Group Verification & Web Panel Gateway
+Developer: Shariya Sunny
 """
 import sys
+import os
 import time
 import json
 import urllib.request
@@ -21,6 +23,31 @@ GROUP_CHAT_ID = "-1003823185963"
 GROUP_INVITE_URL = "https://t.me/+koExPRjJH11iOTFl"
 WEB_APP_URL = "https://sshariyasunny.github.io/dark-number-panel/"
 
+# File to store users who have already verified so they are NEVER asked again
+VERIFIED_USERS_FILE = os.path.join(os.path.dirname(__file__), "verified_users.json")
+
+def load_verified_users():
+    if os.path.exists(VERIFIED_USERS_FILE):
+        try:
+            with open(VERIFIED_USERS_FILE, "r", encoding="utf-8") as f:
+                return set(json.load(f))
+        except Exception:
+            return set()
+    return set()
+
+def save_verified_user(user_id):
+    users = load_verified_users()
+    users.add(str(user_id))
+    try:
+        with open(VERIFIED_USERS_FILE, "w", encoding="utf-8") as f:
+            json.dump(list(users), f)
+    except Exception as e:
+        print("Error saving verified user:", e)
+
+def is_user_already_saved(user_id):
+    users = load_verified_users()
+    return str(user_id) in users
+
 API_BASE = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
 def api_call(method, payload=None):
@@ -29,11 +56,10 @@ def api_call(method, payload=None):
     data = json.dumps(payload).encode("utf-8") if payload else None
     req = urllib.request.Request(url, data=data, headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=40) as response:
+        with urllib.request.urlopen(req, timeout=35) as response:
             return json.loads(response.read().decode("utf-8"))
     except urllib.error.HTTPError as e:
         err_body = e.read().decode("utf-8")
-        # print(f"API Error [{method}]:", err_body)
         return json.loads(err_body) if err_body.startswith("{") else None
     except Exception as e:
         print(f"Network error in api_call ({method}):", e)
@@ -43,7 +69,6 @@ def is_user_member_of_group(user_id):
     res = api_call("getChatMember", {"chat_id": GROUP_CHAT_ID, "user_id": user_id})
     if res and res.get("ok"):
         status = res.get("result", {}).get("status")
-        # 'creator', 'administrator', 'member', 'restricted' are considered valid members
         if status in ["creator", "administrator", "member", "restricted"]:
             return True
     return False
@@ -53,10 +78,12 @@ def send_welcome_panel(chat_id, user_first_name):
         f"⚡ <b>DARK BOOSTER NUMBER PANEL</b> ⚡\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"👋 হ্যালো <b>{user_first_name}</b>, স্বাগতম!\n"
-        f"✅ আপনি আমাদের অফিসিয়াল ওটিপি গ্রুপের একজন ভেরিফাইড মেম্বার।\n\n"
-        f"এখন আপনি যেকোনো কান্ট্রির ভার্চুয়াল নম্বর এবং লাইভ ওটিপি নিয়ে কাজ করতে পারবেন।\n"
+        f"✅ আপনি একজন অথরাইজড মেম্বার।\n\n"
+        f"এখন আপনি যেকোনো কান্ট্রির ভার্চুয়াল নম্বর এবং লাইভ ওটিপি নিয়ে সরাসরি কাজ করতে পারবেন।\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"👇 নিচে <b>'🚀 Open Dark Booster Panel'</b> বাটনে ক্লিক করে কাজ শুরু করুন:"
+        f"👑 <b>Developer:</b> <b>Shariya Sunny</b>\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"👇 নিচে <b>'🚀 Open Dark Booster Panel'</b> বাটনে ক্লিক করে প্যানেল ওপেন করুন:"
     )
     keyboard = {
         "inline_keyboard": [
@@ -68,7 +95,7 @@ def send_welcome_panel(chat_id, user_first_name):
             ],
             [
                 {
-                    "text": "📢 Visit OTP Group",
+                    "text": "📢 Official OTP Group",
                     "url": GROUP_INVITE_URL
                 }
             ]
@@ -83,13 +110,15 @@ def send_welcome_panel(chat_id, user_first_name):
 
 def send_join_group_prompt(chat_id, user_first_name):
     text = (
-        f"⚠️ <b>ACCESS RESTRICTED • ওটিপি গ্রুপে জয়েন বাধ্যতামূলক</b> ⚠️\n"
+        f"⚠️ <b>ACCESS RESTRICTED • ওটিপি গ্রুপে জয়েন আবশ্যক</b> ⚠️\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"👋 হ্যালো <b>{user_first_name}</b>,\n"
-        f"<b>Dark Booster Number Panel</b> ব্যবহার করতে হলে আপনাকে প্রথমে আমাদের অফিসিয়াল ওটিপি গ্রুপে যুক্ত হতে হবে!\n\n"
-        f"১️⃣ নিচে <b>'📢 ১. ওটিপি গ্রুপে জয়েন করুন'</b> বাটনে ক্লিক করুন।\n"
-        f"২️⃣ গ্রুপে জয়েন করার পর <b>'✅ ২. ভেরিফাই ও প্যানেল আনলক'</b> বাটনে ক্লিক করুন।\n"
-        f"━━━━━━━━━━━━━━━━━━━━━━"
+        f"<b>Dark Booster Number Panel</b> ব্যবহার করতে হলে প্রথমবার আমাদের অফিসিয়াল ওটিপি গ্রুপে যুক্ত হতে হবে!\n\n"
+        f"১️⃣ নিচে <b>'📢 ১. ওটিপি গ্রুপে জয়েন করুন'</b> বাটনে ক্লিক করে জয়েন করুন।\n"
+        f"২️⃣ জয়েন করার পর <b>'✅ ২. ভেরিফাই ও আনলক'</b> বাটনে ক্লিক করুন।\n\n"
+        f"<i>(একবার ভেরিফাই করলে পরবর্তীতে আর কখনো ভেরিফাই করা লাগবে না)</i>\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━\n"
+        f"👑 <b>Developer:</b> <b>Shariya Sunny</b>"
     )
     keyboard = {
         "inline_keyboard": [
@@ -101,7 +130,7 @@ def send_join_group_prompt(chat_id, user_first_name):
             ],
             [
                 {
-                    "text": "✅ ২. ভেরিফাই ও প্যানেল আনলক",
+                    "text": "✅ ২. ভেরিফাই ও আনলক",
                     "callback_data": "check_membership"
                 }
             ]
@@ -124,14 +153,21 @@ def handle_update(update):
         user_id = user.get("id")
         user_name = user.get("first_name", "User")
 
-        # Ignore messages inside the group itself so bot doesn't spam the group
+        # Ignore group messages
         if chat.get("type") in ["group", "supergroup"]:
             return
 
         if not user_id:
             return
 
+        # Check if already verified previously
+        if is_user_already_saved(user_id):
+            send_welcome_panel(chat_id, user_name)
+            return
+
+        # If not saved yet, check membership now
         if is_user_member_of_group(user_id):
+            save_verified_user(user_id)
             send_welcome_panel(chat_id, user_name)
         else:
             send_join_group_prompt(chat_id, user_name)
@@ -150,9 +186,10 @@ def handle_update(update):
 
         if data == "check_membership":
             if is_user_member_of_group(user_id):
+                save_verified_user(user_id)
                 api_call("answerCallbackQuery", {
                     "callback_query_id": cb_id,
-                    "text": "🎉 অভিনন্দন! আপনি সফলভাবে ভেরিফাই হয়েছেন। প্যানেল আনলক হয়েছে!",
+                    "text": "🎉 অভিনন্দন! আপনি সফলভাবে ভেরিফাই হয়েছেন। প্যানেল পার্মানেন্টলি আনলক হয়েছে!",
                     "show_alert": True
                 })
                 # Edit message to welcome with WebApp button
@@ -160,8 +197,11 @@ def handle_update(update):
                     f"⚡ <b>ACCESS GRANTED • DARK BOOSTER PANEL</b> ⚡\n"
                     f"━━━━━━━━━━━━━━━━━━━━━━\n"
                     f"🎉 অভিনন্দন <b>{user_name}</b>!\n"
-                    f"আপনি সফলভাবে আমাদের ওটিপি গ্রুপে জয়েন করেছেন।\n\n"
-                    f"👇 নিচে <b>'🚀 Open Dark Booster Panel'</b> বাটনে ক্লিক করে ভার্চুয়াল নম্বর ও ওটিপি নেওয়া শুরু করুন:"
+                    f"আপনি সফলভাবে আমাদের ওটিপি গ্রুপে যুক্ত হয়েছেন।\n\n"
+                    f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                    f"👑 <b>Developer:</b> <b>Shariya Sunny</b>\n"
+                    f"━━━━━━━━━━━━━━━━━━━━━━\n"
+                    f"👇 নিচে <b>'🚀 Open Dark Booster Panel'</b> বাটনে ক্লিক করে কাজ শুরু করুন:"
                 )
                 keyboard = {
                     "inline_keyboard": [
@@ -188,7 +228,7 @@ def handle_update(update):
                 })
 
 def main():
-    print("⚡ Dark Booster Telegram Bot Gateway is starting...")
+    print("Dark Booster Telegram Bot Gateway is active...")
     offset = None
     while True:
         try:
