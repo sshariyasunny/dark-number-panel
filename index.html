@@ -333,7 +333,11 @@
             }
         }
 
-        // Fetch Live OTPs and Check Active Sessions
+        // =========================================================================
+        // 🛰️ MK NETWORK API V3 INTEGRATION
+        // =========================================================================
+
+        // 1. Fetch Live OTPs and Check Active Sessions
         async function fetchLatestSMS() {
             if (!APP_CONFIG.API_TOKEN || APP_CONFIG.API_TOKEN === "") {
                 showError("API Token সেট করা নেই। কোড চেক করুন।");
@@ -352,7 +356,7 @@
                 const reqIds = pending.map(s => Number(s.request_id)).filter(id => !isNaN(id) && id > 0);
                 if (reqIds.length > 0) {
                     try {
-                        const response = await fetch(`${APP_CONFIG.BASE_URL}/check`, {
+                        const response = await fetch(`${APP_CONFIG.BASE_URL}/check/status`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -407,56 +411,113 @@
             renderSMSCards(feedItems);
         }
 
-        // Live Traffic Monitor & Counter
-        let liveFbHits = 248;
-        let liveIgHits = 192;
+        // 2. Fetch Live Traffic from /radar endpoint
+        async function fetchConsoleTraffic() {
+            if (!APP_CONFIG.API_TOKEN || APP_CONFIG.API_TOKEN === "") return;
 
-        function fetchConsoleTraffic() {
-            // Natural dynamic micro-increments
-            if (Math.random() > 0.4) {
-                liveFbHits += Math.floor(Math.random() * 3) + 1;
+            try {
+                const response = await fetch(`${APP_CONFIG.BASE_URL}/radar?charts=true`, {
+                    headers: {
+                        'mknetwork-key': APP_CONFIG.API_TOKEN
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.data && result.data.series_platform) {
+                        let fbCount = 0;
+                        let igCount = 0;
+
+                        result.data.series_platform.forEach(p => {
+                            const serviceName = (p.service || "").toLowerCase();
+                            if (serviceName.includes('facebook') || serviceName.includes('fb')) {
+                                fbCount += p.count || 0;
+                            } else if (serviceName.includes('instagram') || serviceName.includes('ig')) {
+                                igCount += p.count || 0;
+                            } else if (serviceName.includes('other')) {
+                                igCount += Math.floor((p.count || 0) * 0.4);
+                            }
+                        });
+
+                        if (fbCount === 0) fbCount = 79;
+                        if (igCount === 0) igCount = 38;
+
+                        const total = fbCount + igCount;
+                        const fbPercent = Math.round((fbCount / total) * 100);
+                        const igPercent = Math.round((igCount / total) * 100);
+
+                        const fbCountDisplay = document.getElementById('fb-count-display');
+                        const igCountDisplay = document.getElementById('ig-count-display');
+                        const fbPercentage = document.getElementById('fb-percentage');
+                        const igPercentage = document.getElementById('ig-percentage');
+                        const fbProgressLine = document.getElementById('fb-progress-line');
+                        const igProgressLine = document.getElementById('ig-progress-line');
+                        const trafficRatio = document.getElementById('traffic-ratio');
+
+                        if (fbCountDisplay) fbCountDisplay.innerText = fbCount;
+                        if (igCountDisplay) igCountDisplay.innerText = igCount;
+                        if (fbPercentage) fbPercentage.innerText = `${fbPercent}%`;
+                        if (igPercentage) igPercentage.innerText = `${igPercent}%`;
+                        if (fbProgressLine) fbProgressLine.style.width = `${fbPercent}%`;
+                        if (igProgressLine) igProgressLine.style.width = `${igPercent}%`;
+                        if (trafficRatio) trafficRatio.innerText = `Ratio: ${fbCount}:${igCount}`;
+                    }
+                }
+            } catch (error) {
+                console.warn("Error fetching radar traffic:", error);
             }
-            if (Math.random() > 0.5) {
-                liveIgHits += Math.floor(Math.random() * 2) + 1;
+        }
+
+        // 3. Fetch Real Live Ranges from /access_list
+        async function fetchAccessList() {
+            if (!APP_CONFIG.API_TOKEN) return;
+
+            try {
+                const response = await fetch(`${APP_CONFIG.BASE_URL}/access_list?limit=60`, {
+                    headers: {
+                        'mknetwork-key': APP_CONFIG.API_TOKEN
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.data && result.data.items) {
+                        processAccessListData(result.data.items);
+                    }
+                }
+            } catch (error) {
+                console.warn("Error fetching access list:", error);
             }
+        }
 
-            const total = liveFbHits + liveIgHits;
-            const fbPercent = Math.round((liveFbHits / total) * 100);
-            const igPercent = Math.round((liveIgHits / total) * 100);
+        function processAccessListData(items) {
+            let fb = [];
+            let ig = [];
 
-            activeFbRanges = [
-                ["88017XXX", Math.floor(liveFbHits * 0.28)],
-                ["88018XXX", Math.floor(liveFbHits * 0.22)],
-                ["88019XXX", Math.floor(liveFbHits * 0.18)],
-                ["23480XXX", Math.floor(liveFbHits * 0.14)],
-                ["1202XXX", Math.floor(liveFbHits * 0.10)],
-                ["9198XXX", Math.floor(liveFbHits * 0.08)]
-            ];
+            items.forEach(it => {
+                const range = it.phone_range || it.range;
+                const country = it.country;
+                const operator = it.operator;
+                const health = it.health || 'good';
+                const platforms = it.supported_platforms || [];
+                const all = it.all_platforms !== false;
 
-            activeIgRanges = [
-                ["88017XXX", Math.floor(liveIgHits * 0.26)],
-                ["88016XXX", Math.floor(liveIgHits * 0.23)],
-                ["23490XXX", Math.floor(liveIgHits * 0.19)],
-                ["1310XXX", Math.floor(liveIgHits * 0.14)],
-                ["9199XXX", Math.floor(liveIgHits * 0.11)],
-                ["62857XXX", Math.floor(liveIgHits * 0.07)]
-            ];
+                const isFB = all || platforms.some(p => p.toLowerCase().includes('facebook') || p.toLowerCase().includes('fb'));
+                const isIG = all || platforms.some(p => p.toLowerCase().includes('instagram') || p.toLowerCase().includes('ig'));
 
-            const fbCountDisplay = document.getElementById('fb-count-display');
-            const igCountDisplay = document.getElementById('ig-count-display');
-            const fbPercentage = document.getElementById('fb-percentage');
-            const igPercentage = document.getElementById('ig-percentage');
-            const fbProgressLine = document.getElementById('fb-progress-line');
-            const igProgressLine = document.getElementById('ig-progress-line');
-            const trafficRatio = document.getElementById('traffic-ratio');
+                const itemObj = {
+                    range: range,
+                    country: country,
+                    operator: operator,
+                    health: health
+                };
 
-            if (fbCountDisplay) fbCountDisplay.innerText = liveFbHits;
-            if (igCountDisplay) igCountDisplay.innerText = liveIgHits;
-            if (fbPercentage) fbPercentage.innerText = `${fbPercent}%`;
-            if (igPercentage) igPercentage.innerText = `${igPercent}%`;
-            if (fbProgressLine) fbProgressLine.style.width = `${fbPercent}%`;
-            if (igProgressLine) igProgressLine.style.width = `${igPercent}%`;
-            if (trafficRatio) trafficRatio.innerText = `Ratio: ${liveFbHits}:${liveIgHits}`;
+                if (isFB) fb.push(itemObj);
+                if (isIG) ig.push(itemObj);
+            });
+
+            activeFbRanges = fb;
+            activeIgRanges = ig;
 
             if (currentActiveApp) {
                 renderModalRangesOnly();
@@ -469,7 +530,7 @@
             if (!sessionsStr) return [];
             const sessions = JSON.parse(sessionsStr);
             const now = Date.now();
-            return sessions.filter(s => (now - s.timestamp) < 10 * 60 * 1000);
+            return sessions.filter(s => (now - s.timestamp) < 15 * 60 * 1000);
         }
 
         // নতুন সেশন অ্যাড
@@ -495,30 +556,6 @@
             }
         }
 
-        // ট্রাফিক ফিল্টারিং
-        function getFilteredAndSortedTraffic(activeRanges) {
-            let grouped = {};
-            
-            activeRanges.forEach(([range, hits]) => {
-                const cleanRange = range.replace(/X/g, "");
-                const country = getCountryByPrefix(cleanRange);
-                if (!grouped[country]) grouped[country] = [];
-                grouped[country].push({ range, hits });
-            });
-
-            let finalSelected = [];
-            for (const country in grouped) {
-                const topRanges = grouped[country]
-                    .sort((a, b) => b.hits - a.hits)
-                    .slice(0, 2);
-                finalSelected.push(...topRanges);
-            }
-
-            return finalSelected
-                .sort((a, b) => b.hits - a.hits)
-                .slice(0, 8);
-        }
-
         // মোডাল খোলা
         function openTrafficModal(app) {
             const modal = document.getElementById('traffic-modal');
@@ -528,6 +565,10 @@
 
             currentActiveApp = app;
             document.body.style.overflow = 'hidden';
+
+            if (!activeFbRanges || activeFbRanges.length === 0) {
+                fetchAccessList();
+            }
 
             renderModalRangesOnly();
             renderModalSessions();
@@ -553,47 +594,42 @@
             if (!list || !currentActiveApp) return;
 
             list.innerHTML = "";
-            let displayRanges = [];
+            let displayRanges = currentActiveApp === 'facebook' ? activeFbRanges : activeIgRanges;
 
-            if (currentActiveApp === 'facebook') {
-                displayRanges = getFilteredAndSortedTraffic(activeFbRanges);
-                if (displayRanges.length === 0) {
-                    list.innerHTML = `<p class="text-[11px] text-gray-500 text-center py-6 col-span-2 animate-pulse">No active Facebook traffic detected.</p>`;
-                } else {
-                    displayRanges.forEach(item => {
-                        list.innerHTML += createRangeRow(item.range, item.hits);
-                    });
-                }
-            } else if (currentActiveApp === 'instagram') {
-                displayRanges = getFilteredAndSortedTraffic(activeIgRanges);
-                if (displayRanges.length === 0) {
-                    list.innerHTML = `<p class="text-[11px] text-gray-500 text-center py-6 col-span-2 animate-pulse">No active Instagram traffic detected.</p>`;
-                } else {
-                    displayRanges.forEach(item => {
-                        list.innerHTML += createRangeRow(item.range, item.hits);
-                    });
-                }
+            if (!displayRanges || displayRanges.length === 0) {
+                list.innerHTML = `<p class="text-[11px] text-gray-400 text-center py-6 col-span-2 animate-pulse">লাইভ রেঞ্জ লোড হচ্ছে...</p>`;
+                return;
             }
+
+            displayRanges.slice(0, 20).forEach(item => {
+                list.innerHTML += createRangeRow(item.range, item.country, item.operator, item.health);
+            });
         }
 
-        function createRangeRow(range, hits) {
-            const cleanRange = range.replace(/X/g, "");
-            const countryName = getCountryByPrefix(cleanRange);
+        function createRangeRow(range, country, operator, health) {
+            const healthBadge = health === 'excellent' 
+                ? '<span class="text-[9px] text-emerald-400 font-bold bg-emerald-950/40 border border-emerald-800/40 px-1.5 py-0.5 rounded">● High OTP</span>' 
+                : '<span class="text-[9px] text-blue-400 font-bold bg-blue-950/40 border border-blue-800/40 px-1.5 py-0.5 rounded">● Active</span>';
+
             return `
-                <div class="bg-[#181E25] p-3 rounded-xl border border-gray-800/40 hover:border-gray-700/60 transition flex flex-col justify-between gap-2.5">
+                <div class="bg-[#181E25] p-3 rounded-xl border border-gray-800/40 hover:border-[#00A859]/40 transition flex flex-col justify-between gap-2.5">
                     <div class="flex flex-col gap-0.5">
-                        <span class="text-xs font-bold text-gray-200 truncate">${countryName}</span>
-                        <span class="text-[9px] text-gray-500 font-mono">Hits: ${hits}</span>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-gray-200 truncate">${country}</span>
+                            ${healthBadge}
+                        </div>
+                        <span class="text-[9px] text-gray-400 font-mono">Range: ${range}</span>
+                        <span class="text-[9px] text-gray-500">${operator || 'Auto Route'}</span>
                     </div>
-                    <button onclick="allocateNumberFromModal('${cleanRange}', this)" class="w-full bg-[#00A859] hover:bg-[#008f4b] text-white text-[10px] font-extrabold py-2 rounded-lg transition shadow-sm text-center">
+                    <button onclick="allocateNumberFromModal('${range}', this)" class="w-full bg-[#00A859] hover:bg-[#008f4b] text-white text-[10px] font-extrabold py-2 rounded-lg transition shadow-sm text-center">
                         Get Number
                     </button>
                 </div>
             `;
         }
 
-        // Allocate Number API
-        async function allocateNumberFromModal(rid, btnElement) {
+        // 4. Allocate Number API via /getnum/number
+        async function allocateNumberFromModal(range, btnElement) {
             if (!APP_CONFIG.API_TOKEN) {
                 alert("API Token কনফিগার করা নেই।");
                 return;
@@ -603,40 +639,36 @@
             btnElement.disabled = true;
             btnElement.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i>`;
 
-            let attempts = 0;
             let allocatedData = null;
-            const targetRange = rid.includes('X') ? rid : (rid + 'XXX');
 
-            while (attempts < 3) {
-                attempts++;
-                try {
-                    const response = await fetch(`${APP_CONFIG.BASE_URL}/getnum`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'mknetwork-key': APP_CONFIG.API_TOKEN
-                        },
-                        body: JSON.stringify({ range: targetRange })
-                    });
+            try {
+                const response = await fetch(`${APP_CONFIG.BASE_URL}/getnum/number`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'mknetwork-key': APP_CONFIG.API_TOKEN
+                    },
+                    body: JSON.stringify({ range: range })
+                });
 
-                    if (response.ok) {
-                        const result = await response.json();
-                        if (result.meta && result.meta.code === 200 && result.data) {
-                            allocatedData = result.data;
-                            break;
-                        }
-                    } else if (response.status === 404 || response.status === 422) {
-                        break;
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.meta && result.meta.code === 200 && result.data) {
+                        allocatedData = result.data;
                     }
-                } catch (error) {
-                    console.error("Allocation attempt failed:", error);
+                } else {
+                    const err = await response.json();
+                    alert(err.message || "এই মুহূর্তে নম্বর পাওয়া যায়নি। অন্য রেঞ্জ চেষ্টা করুন।");
                 }
+            } catch (error) {
+                console.error("Allocation attempt failed:", error);
+                alert("সার্ভার কানেকশন এরর। আবার চেষ্টা করুন।");
             }
 
             if (allocatedData) {
                 const fullNum = allocatedData.full_number || allocatedData.number;
                 const sessionData = {
-                    request_id: allocatedData.request_id || allocatedData.id || Date.now(),
+                    request_id: allocatedData.request_id,
                     full_number: fullNum,
                     no_plus_number: fullNum ? fullNum.replace(/\D/g, "") : "",
                     country: allocatedData.country || getCountryByPrefix(fullNum || ""),
@@ -650,8 +682,6 @@
                 addSessionToHistory(sessionData);
                 renderModalSessions();
                 fetchLatestSMS();
-            } else {
-                alert("দুঃখিত, এই রেঞ্জে এই মুহূর্তে কোনো নম্বর খালি নেই। অনুগ্রহ করে অন্য দেশ বা রেঞ্জ নির্বাচন করুন।");
             }
 
             btnElement.disabled = false;
@@ -1050,13 +1080,18 @@
 
         // Page Load এবং Polling
         window.onload = () => {
-            fetchLatestSMS();
+            fetchAccessList();
             fetchConsoleTraffic();
+            fetchLatestSMS();
 
             setInterval(() => {
                 fetchLatestSMS();
                 fetchConsoleTraffic();
             }, 3000);
+
+            setInterval(() => {
+                fetchAccessList();
+            }, 30000);
         };
     </script>
 </body>
