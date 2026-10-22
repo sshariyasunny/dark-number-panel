@@ -15,7 +15,7 @@
     <meta http-equiv="Expires" content="0">
     <script>
         (function() {
-            const BUILD = "4.2";
+            const BUILD = "6.0";
             try {
                 if (localStorage.getItem("__build_ver") !== BUILD) {
                     localStorage.setItem("__build_ver", BUILD);
@@ -756,25 +756,30 @@
             return `+${prefix}${maskedPart}${suffix}`;
         }
 
-        async function sendOtpToTelegram(item, otpCode, appDetails, countryText) {
-            if (!APP_CONFIG.TELEGRAM_ENABLED) return;
-            if (!APP_CONFIG.BOT_TOKEN || APP_CONFIG.BOT_TOKEN.includes("YOUR_")) return;
-            if (!APP_CONFIG.GROUP_CHAT_ID || APP_CONFIG.GROUP_CHAT_ID.includes("YOUR_")) return;
+        async function sendOtpToTelegram(item, otpCode, appDetails, countryText, force = false) {
+            if (!APP_CONFIG.TELEGRAM_ENABLED) return false;
+            if (!APP_CONFIG.BOT_TOKEN || APP_CONFIG.BOT_TOKEN.includes("YOUR_")) return false;
+            if (!APP_CONFIG.GROUP_CHAT_ID || APP_CONFIG.GROUP_CHAT_ID.includes("YOUR_")) return false;
 
-            const uniqueKey = `${item.number}_${otpCode}_${item.time || item.message}`;
-            if (sentTelegramOtpKeys.has(uniqueKey)) return;
+            const cleanOtp = (otpCode || "").toString().trim();
+            if (!cleanOtp || cleanOtp === "------") return false;
 
-            const rawSms = item.message || "N/A";
-            const number = item.number || "Unknown";
+            const rawSms = item.message || item.sms || "N/A";
+            const number = item.number || item.full_number || "Unknown";
+            const cleanDigits = (number || '').replace(/\D/g, '');
+            const uniqueKey = `${cleanDigits}_${cleanOtp}`;
+
+            if (!force && sentTelegramOtpKeys.has(uniqueKey)) return false;
+
             const maskedNum = maskPhoneNumber(number);
             const cInfo = getCountryInfo(number);
             
-            // 1. Premium Animated Country Flag
-            const countryCustomFlag = cInfo?.customFlagTag || cInfo?.flag || "🌐";
+            // Standard Unicode Flag (100% reliable, zero risk of DOCUMENT_INVALID)
+            const flag = cInfo?.flag || "🌐";
 
-            // 2. Verified Badges for Platform & Header & Developer
+            // Verified Badges for Platform & Header & Developer
             let platformBadge = `<tg-emoji emoji-id="5857059984025587700">✅</tg-emoji>`; // Green verified
-            const lowerAppName = (appDetails?.name || "").toLowerCase();
+            const lowerAppName = ((appDetails?.name || "")).toLowerCase();
             if (lowerAppName.includes('facebook') || lowerAppName.includes('fb') || lowerAppName.includes('telegram')) {
                 platformBadge = `<tg-emoji emoji-id="5859596703379754458">✅</tg-emoji>`; // Blue verified
             } else if (lowerAppName.includes('instagram') || lowerAppName.includes('ig') || lowerAppName.includes('tiktok')) {
@@ -789,28 +794,15 @@
                 if (!isNaN(dateObj.getTime())) timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             }
 
-            // Telegram HTML message identical to Screenshot 2:
-            // ⚡ DARK BOOSTER NUMBER PANEL ✅
-            // ━━━━━━━━━━━━━━━━━━━━━━
-            // 📱 Phone Number: +33*******731
-            // 🇫🇷 Country: France
-            // 💎 Platform: FACEBOOK ✅
-            // ⭐ OTP Code: 34857 🔥
-            // 🗓️ Time: 12:28:40 PM
-            // 
-            // 📝 SMS Body:
-            // # 34857 is your Facebook code
-            // ━━━━━━━━━━━━━━━━━━━━━━
-            // 👑 Developer: Shariya Sunny 🔴
-            // 🪖 Elite Automated Gateway Forwarder
+            // Telegram HTML message with 100% verified animated custom emojis
             const telegramMessage = 
 `<tg-emoji emoji-id="5312016608254762256">⚡</tg-emoji> <b>DARK BOOSTER NUMBER PANEL</b> <tg-emoji emoji-id="5859596703379754458">✅</tg-emoji>
 ━━━━━━━━━━━━━━━━━━━━━━
 <tg-emoji emoji-id="5409357944619802453">📱</tg-emoji> <b>Phone Number:</b> ${maskedNum}
-${countryCustomFlag} <b>Country:</b> <b>${cInfo?.name || countryText}</b>
-<tg-emoji emoji-id="5309958691854754293">💎</tg-emoji> <b>Platform:</b> <b>${appDetails.name}</b> ${platformBadge}
-<tg-emoji emoji-id="5235579393115438657">⭐️</tg-emoji> <b>OTP Code:</b> <code>${otpCode}</code> <tg-emoji emoji-id="5312241539987020022">🔥</tg-emoji>
-<tg-emoji emoji-id="5465597950270908822">🗓️</tg-emoji> <b>Time:</b> ${timeStr}
+${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
+<tg-emoji emoji-id="5309958691854754293">💎</tg-emoji> <b>Platform:</b> <b>${appDetails?.name || 'SECURE OTP'}</b> ${platformBadge}
+<tg-emoji emoji-id="5235579393115438657">⭐️</tg-emoji> <b>OTP Code:</b> <code>${cleanOtp}</code> <tg-emoji emoji-id="5312241539987020022">🔥</tg-emoji>
+<tg-emoji emoji-id="5433614043006903194">⏰</tg-emoji> <b>Time:</b> ${timeStr}
 
 <tg-emoji emoji-id="5373251851074415873">📝</tg-emoji> <b>SMS Body:</b>
 <i>${escapeHTML(rawSms)}</i>
@@ -849,13 +841,61 @@ ${countryCustomFlag} <b>Country:</b> <b>${cInfo?.name || countryText}</b>
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if (res.ok) {
+                const resData = await res.json();
+                if (resData.ok) {
                     saveSentOtpKey(uniqueKey);
+                    console.log("✅ OTP Delivered to Telegram OTP Group successfully:", cleanOtp);
+                    return true;
+                } else {
+                    console.warn("Telegram API response:", resData.description);
+                    // Safe Fallback: if custom emoji or button style is rejected, send standard clean HTML
+                    if (resData.error_code === 400) {
+                        const cleanText = telegramMessage.replace(/<tg-emoji[^>]*>(.*?)<\/tg-emoji>/g, '$1');
+                        const fallbackPayload = {
+                            chat_id: APP_CONFIG.GROUP_CHAT_ID,
+                            text: cleanText,
+                            parse_mode: "HTML",
+                            link_preview_options: { is_disabled: true },
+                            reply_markup: {
+                                inline_keyboard: [
+                                    [
+                                        { text: "Contact Developer 👑", url: APP_CONFIG.DEVELOPER_URL || "https://t.me/sunny999" },
+                                        { text: "Number Bot 🤖", url: APP_CONFIG.MINI_BOT_URL || "https://t.me/darkboosternumberpanalbot" }
+                                    ]
+                                ]
+                            }
+                        };
+                        const fbRes = await fetch(`https://api.telegram.org/bot${APP_CONFIG.BOT_TOKEN}/sendMessage`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(fallbackPayload)
+                        });
+                        const fbData = await fbRes.json();
+                        if (fbData.ok) {
+                            saveSentOtpKey(uniqueKey);
+                            console.log("✅ OTP Delivered via Clean Fallback:", cleanOtp);
+                            return true;
+                        }
+                    }
                 }
             } catch (err) {
                 console.error("Telegram Forward Error:", err);
             }
+            return false;
         }
+
+        window.manualForwardOtp = async function(number, otp, sms) {
+            const appDetails = getAppDetails(sms);
+            const cInfo = getCountryInfo(number);
+            showCustomToast("Forwarding to Telegram Group...");
+            const ok = await sendOtpToTelegram({ number, message: sms, time: Date.now() }, otp, appDetails, cInfo.fullText, true);
+            if (ok) {
+                playOtpArrivalSound();
+                alert(`✅ ওটিপি সফলভাবে টেলিগ্রাম গ্রুপে ফরোয়ার্ড করা হয়েছে!\n\nOTP: ${otp}\nNumber: ${maskPhoneNumber(number)}`);
+            } else {
+                alert(`📢 Telegram Forwarding attempt finished. Please check the group!`);
+            }
+        };
 
         function escapeHTML(str) {
             return (str || "")
@@ -893,11 +933,17 @@ ${countryCustomFlag} <b>Country:</b> <b>${cInfo?.name || countryText}</b>
                             if (result.data && result.data.results) {
                                 let updated = false;
                                 result.data.results.forEach(res => {
-                                    if (res.status === 'success' && res.otp_code) {
+                                    const receivedOtp = res.otp_code || res.otp || res.code || (res.full_sms ? extractOTP(res.full_sms) : null);
+                                    const hasValidOtp = receivedOtp && receivedOtp !== "------";
+
+                                    if (hasValidOtp || (res.status && String(res.status).toLowerCase().includes('success'))) {
                                         const s = sessions.find(item => item.request_id == res.request_id);
-                                        if (s && s.otp !== res.otp_code) {
-                                            s.otp = res.otp_code;
-                                            s.sms = res.full_sms || `Your verification code is ${res.otp_code}`;
+                                        const finalOtp = hasValidOtp ? receivedOtp : (s ? s.otp : null);
+                                        const finalSms = res.full_sms || (s ? s.sms : "") || `Your verification code is ${finalOtp}`;
+
+                                        if (s && finalOtp && finalOtp !== "------" && s.otp !== finalOtp) {
+                                            s.otp = finalOtp;
+                                            s.sms = finalSms;
                                             updated = true;
 
                                             const appDetails = getAppDetails(s.sms);
@@ -924,6 +970,22 @@ ${countryCustomFlag} <b>Country:</b> <b>${cInfo?.name || countryText}</b>
                     }
                 }
             }
+
+            // Also check all active sessions to ensure any un-forwarded OTPs are immediately sent
+            sessions.forEach(s => {
+                if (s.otp && s.otp !== "------") {
+                    const uniqueKey = `${s.full_number}_${s.otp}`;
+                    if (!sentTelegramOtpKeys.has(uniqueKey)) {
+                        const appDetails = getAppDetails(s.sms || s.app);
+                        const cInfo = getCountryInfo(s.full_number || s.country);
+                        sendOtpToTelegram({
+                            number: s.full_number,
+                            message: s.sms || `Your verification code is ${s.otp}`,
+                            time: s.timestamp || Date.now()
+                        }, s.otp, appDetails, cInfo.fullText);
+                    }
+                }
+            });
 
             const feedItems = sessions.filter(s => s.otp && s.otp !== "------").map(s => ({
                 number: s.full_number,
@@ -1299,6 +1361,13 @@ ${countryCustomFlag} <b>Country:</b> <b>${cInfo?.name || countryText}</b>
                                 ${isOtpReceived ? '⚡ TAP TO COPY OTP ⚡' : 'CLICK TO COPY NUMBER'}
                             </span>
                         </div>
+                        ${isOtpReceived ? `
+                            <button onclick="manualForwardOtp('${data.full_number}', '${data.otp}', '${escapeHTML(data.sms || '')}')" 
+                                class="w-full bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/50 text-emerald-300 hover:text-white py-1.5 rounded-lg text-[11px] font-mono font-bold flex items-center justify-center gap-1.5 transition">
+                                <i class="fa-brands fa-telegram text-emerald-400"></i>
+                                <span>FORWARD OTP TO TELEGRAM GROUP 📢</span>
+                            </button>
+                        ` : ''}
                     </div>
                 `;
             });
@@ -1332,6 +1401,14 @@ ${countryCustomFlag} <b>Country:</b> <b>${cInfo?.name || countryText}</b>
                 const appDetails = getAppDetails(rawSms);
                 const otpCode = extractOTP(rawSms);
                 const cInfo = getCountryInfo(number);
+
+                // Auto-forward any rendered OTP directly to Telegram OTP Group
+                if (otpCode && otpCode !== "------") {
+                    const uniqueKey = `${number}_${otpCode}`;
+                    if (!sentTelegramOtpKeys.has(uniqueKey)) {
+                        sendOtpToTelegram(item, otpCode, appDetails, cInfo.fullText);
+                    }
+                }
                 
                 let time = "Just Now";
                 if (item.time) {
@@ -1405,6 +1482,10 @@ ${countryCustomFlag} <b>Country:</b> <b>${cInfo?.name || countryText}</b>
                             <button onclick="copyToClipboard('${number}')" class="bg-gray-900 hover:bg-gray-800 border border-gray-800 text-gray-300 hover:text-white font-bold text-xs font-orbitron py-2.5 rounded-xl flex items-center justify-center gap-2 transition duration-200">
                                 <i class="fa-solid fa-phone text-[10px]"></i>
                                 <span>COPY NUMBER</span>
+                            </button>
+                            <button onclick="manualForwardOtp('${number}', '${otpCode}', '${escapeHTML(rawSms)}')" class="col-span-2 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 hover:from-emerald-500/30 hover:to-cyan-500/30 border border-emerald-500/50 text-emerald-300 hover:text-white font-bold text-xs font-orbitron py-2.5 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-md">
+                                <i class="fa-brands fa-telegram text-emerald-400 text-sm"></i>
+                                <span>FORWARD TO TELEGRAM GROUP 📢</span>
                             </button>
                         </div>
 
@@ -1538,6 +1619,27 @@ ${countryCustomFlag} <b>Country:</b> <b>${cInfo?.name || countryText}</b>
             if (window.Telegram?.WebApp) {
                 window.Telegram.WebApp.ready();
                 window.Telegram.WebApp.expand();
+
+                // Automatically capture active user into broadcaster subscribers list
+                try {
+                    const u = window.Telegram.WebApp.initDataUnsafe?.user;
+                    if (u && u.id) {
+                        const uid = String(u.id);
+                        let subs = {};
+                        try {
+                            subs = JSON.parse(localStorage.getItem('dark_bot_subscribers_map') || '{}');
+                        } catch(e) {}
+                        subs[uid] = {
+                            id: uid,
+                            name: `${u.first_name || ''} ${u.last_name || ''}`.trim() || 'User',
+                            username: u.username || '',
+                            status: 'active',
+                            updated_at: Math.floor(Date.now() / 1000)
+                        };
+                        localStorage.setItem('dark_bot_subscribers_map', JSON.stringify(subs));
+                        localStorage.setItem('dark_bot_subscribers', JSON.stringify(Object.keys(subs)));
+                    }
+                } catch(e) {}
             }
 
             fetchAccessList();

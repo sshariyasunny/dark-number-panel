@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Booster - Telegram Bot Broadcast Terminal</title>
+    <title>Dark Booster - Telegram Bot Broadcast Terminal & User Manager</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <script>
         tailwind.config = {
@@ -108,21 +108,21 @@
                             DARK BOOSTER <span class="text-cyan-400">BROADCASTER</span>
                         </h1>
                         <span class="text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-500/40 px-2 py-0.5 rounded font-mono font-bold uppercase">
-                            BOT VIP
+                            AUDIENCE TRACKER
                         </span>
                     </div>
                     <p class="text-xs text-gray-400 font-rajdhani tracking-wide">
-                        Private Telegram Bot Broadcast Gateway • All Subscribed Bot Users
+                        Real-time Bot Active Users Intelligence • Delivery Verification Terminal
                     </p>
                 </div>
             </div>
 
             <!-- Bot & Developer Badges -->
             <div class="flex items-center flex-wrap gap-2.5 z-10 justify-center">
-                <div class="flex items-center gap-2 bg-[#050811] px-3.5 py-1.5 rounded-xl border border-gray-800 text-xs font-mono">
+                <a href="https://t.me/darkboosternumberpanalbot" target="_blank" class="flex items-center gap-2 bg-[#050811] hover:border-cyan-500 px-3.5 py-1.5 rounded-xl border border-gray-800 text-xs font-mono transition">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                     <span class="text-emerald-400 font-bold">@darkboosternumberpanalbot</span>
-                </div>
+                </a>
                 <a href="https://t.me/sunny999" target="_blank" class="flex items-center gap-2 bg-red-950/40 hover:bg-red-950/70 border border-red-800/60 px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold text-[#FF2233] shadow-[0_0_12px_rgba(255,34,51,0.3)] transition transform hover:scale-105">
                     <i class="fa-solid fa-crown text-[#FF2233]"></i>
                     <span>DEV: SHARIYA SUNNY (@sunny999)</span>
@@ -130,38 +130,101 @@
             </div>
         </header>
 
+        <!-- TOP METRICS STATS MATRIX -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            
+            <!-- Metric 1: Total Bot Users -->
+            <div class="cyber-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between border-l-4 border-l-cyan-400 relative overflow-hidden group hover:border-cyan-400 transition">
+                <div class="flex justify-between items-start">
+                    <span class="text-[11px] font-bold font-orbitron tracking-wider text-gray-400 uppercase">Total Bot Users</span>
+                    <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-baseline gap-2">
+                    <span id="metric-total-users" class="text-2xl sm:text-3xl font-black font-mono text-white">0</span>
+                    <span class="text-[11px] text-cyan-400 font-rajdhani font-bold">Registered</span>
+                </div>
+                <p class="text-[10px] text-gray-500 font-rajdhani mt-1">সব মিলিয়ে বটের মেমোরিতে থাকা ইউজার</p>
+            </div>
+
+            <!-- Metric 2: Active Inboxes Ready -->
+            <div class="cyber-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between border-l-4 border-l-emerald-400 relative overflow-hidden group hover:border-emerald-400 transition">
+                <div class="flex justify-between items-start">
+                    <span class="text-[11px] font-bold font-orbitron tracking-wider text-gray-400 uppercase">Active Inboxes</span>
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-baseline gap-2">
+                    <span id="metric-active-users" class="text-2xl sm:text-3xl font-black font-mono text-emerald-400">0</span>
+                    <span class="text-[11px] text-emerald-400 font-rajdhani font-bold">Ready</span>
+                </div>
+                <p class="text-[10px] text-gray-500 font-rajdhani mt-1">ব্রডকাস্ট সরাসরি রিসিভ করতে প্রস্তুত</p>
+            </div>
+
+            <!-- Metric 3: OTP Group Members (Live from TG API) -->
+            <div class="cyber-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between border-l-4 border-l-blue-400 relative overflow-hidden group hover:border-blue-400 transition">
+                <div class="flex justify-between items-start">
+                    <span class="text-[11px] font-bold font-orbitron tracking-wider text-gray-400 uppercase">Group Members</span>
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-people-group"></i>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-baseline gap-2">
+                    <span id="metric-group-members" class="text-2xl sm:text-3xl font-black font-mono text-blue-400">--</span>
+                    <span class="text-[11px] text-blue-300 font-rajdhani font-bold">Members</span>
+                </div>
+                <p class="text-[10px] text-gray-500 font-rajdhani mt-1">অফিসিয়াল ওটিপি গ্রুপে যুক্ত সদস্য</p>
+            </div>
+
+            <!-- Metric 4: Broadcast Delivery Health -->
+            <div class="cyber-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between border-l-4 border-l-amber-400 relative overflow-hidden group hover:border-amber-400 transition">
+                <div class="flex justify-between items-start">
+                    <span class="text-[11px] font-bold font-orbitron tracking-wider text-gray-400 uppercase">Delivery Reach</span>
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-baseline gap-2">
+                    <span id="metric-delivery-reach" class="text-2xl sm:text-3xl font-black font-mono text-amber-400">100%</span>
+                    <span class="text-[11px] text-gray-400 font-rajdhani font-bold">Success</span>
+                </div>
+                <p id="metric-reach-sub" class="text-[10px] text-gray-500 font-rajdhani mt-1">সর্বশেষ ব্রডকাস্ট ডেলিভারি স্ট্যাটাস</p>
+            </div>
+
+        </div>
+
+        <!-- Audience Quick Action & Status Bar -->
+        <div class="cyber-card rounded-2xl p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 border border-gray-800">
+            <div class="flex items-center gap-3">
+                <div class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></div>
+                <span class="text-xs text-gray-300 font-mono">
+                    <strong class="text-cyan-400" id="sync-status-text">Live Auto-Sync Active</strong> • Telegram Updates & Database Synchronized
+                </span>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap">
+                <button onclick="syncBotSubscribers(true)" id="sync-btn" class="bg-cyan-500/15 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-xs px-3.5 py-1.5 rounded-xl font-bold font-rajdhani flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-arrows-rotate" id="sync-icon"></i>
+                    <span>Sync Bot Now</span>
+                </button>
+                <button onclick="toggleManageUsersModal()" class="bg-gray-900 hover:bg-gray-800 text-gray-300 border border-gray-700 text-xs px-3 py-1.5 rounded-xl font-rajdhani font-bold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-user-plus text-cyan-400"></i>
+                    <span>Add / Bulk Import</span>
+                </button>
+                <button onclick="exportSubscribers('json')" class="bg-gray-900 hover:bg-gray-800 text-gray-300 border border-gray-700 text-xs px-3 py-1.5 rounded-xl font-rajdhani font-bold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-download text-emerald-400"></i>
+                    <span>Export JSON</span>
+                </button>
+            </div>
+        </div>
+
         <!-- Main Workspace Grid: Compose & Preview -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
             <!-- Left Column: Broadcast Editor (7 cols) -->
             <div class="lg:col-span-7 flex flex-col gap-5">
-
-                <!-- Audience Status Banner -->
-                <div class="cyber-card rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3 border-l-4 border-l-cyan-400">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-cyan-950/80 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-lg">
-                            <i class="fa-solid fa-users-viewfinder"></i>
-                        </div>
-                        <div>
-                            <div class="text-xs text-gray-400 uppercase font-orbitron font-bold">Bot Subscribers Audience</div>
-                            <div class="flex items-center gap-2">
-                                <span id="subscriber-count" class="text-2xl font-black font-mono text-cyan-400">1</span>
-                                <span class="text-xs text-gray-400 font-rajdhani">Users Ready for Broadcast</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                        <button onclick="syncBotSubscribers()" id="sync-btn" class="bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:border-cyan-400 text-xs px-3.5 py-2 rounded-xl font-bold font-rajdhani flex items-center gap-1.5 transition">
-                            <i class="fa-solid fa-arrows-rotate" id="sync-icon"></i>
-                            <span>Sync from Bot Updates</span>
-                        </button>
-                        <button onclick="toggleManageUsersModal()" class="bg-gray-900 hover:bg-gray-800 text-gray-300 border border-gray-700 text-xs px-3 py-2 rounded-xl font-rajdhani font-bold flex items-center gap-1.5 transition">
-                            <i class="fa-solid fa-user-gear"></i>
-                            <span>Manage IDs</span>
-                        </button>
-                    </div>
-                </div>
 
                 <!-- Message Composer Card -->
                 <div class="cyber-card rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
@@ -277,22 +340,26 @@
 
                             <button onclick="confirmAndExecuteBroadcast()" id="broadcast-submit-btn" class="bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black font-orbitron text-sm py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 transition transform hover:scale-[1.02] active:scale-95">
                                 <i class="fa-solid fa-paper-plane text-slate-950 text-base"></i>
-                                <span>LAUNCH BROADCAST TO ALL</span>
+                                <span>LAUNCH BROADCAST TO ALL (<span id="btn-target-count">0</span>)</span>
                             </button>
                         </div>
 
-                        <!-- Real-time Progress Bar (Hidden by default) -->
-                        <div id="broadcast-progress-container" class="hidden flex flex-col gap-2 p-4 bg-[#050811] rounded-xl border border-cyan-500/30">
+                        <!-- Real-time Progress Bar & Detailed Audit Log -->
+                        <div id="broadcast-progress-container" class="hidden flex flex-col gap-2.5 p-4 bg-[#050811] rounded-xl border border-cyan-500/40 shadow-xl">
                             <div class="flex justify-between items-center text-xs font-mono">
-                                <span id="progress-status" class="text-cyan-400 flex items-center gap-2">
-                                    <i class="fa-solid fa-circle-notch animate-spin"></i> Broadcasting in progress...
+                                <span id="progress-status" class="text-cyan-400 flex items-center gap-2 font-bold">
+                                    <i class="fa-solid fa-circle-notch animate-spin"></i> Broadcasting to subscribers...
                                 </span>
-                                <span id="progress-stats" class="text-gray-300">0 / 0 (0%)</span>
+                                <span id="progress-stats" class="text-gray-300 font-bold">0 / 0 (0%)</span>
                             </div>
-                            <div class="w-full bg-gray-900 rounded-full h-2.5 overflow-hidden border border-gray-800">
-                                <div id="progress-bar-fill" class="bg-gradient-to-r from-cyan-400 to-emerald-400 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            <div class="w-full bg-gray-900 rounded-full h-3 overflow-hidden border border-gray-800">
+                                <div id="progress-bar-fill" class="bg-gradient-to-r from-cyan-400 via-blue-500 to-emerald-400 h-3 rounded-full transition-all duration-200" style="width: 0%"></div>
                             </div>
-                            <div id="progress-log" class="text-[11px] font-mono text-gray-400 max-h-24 overflow-y-auto flex flex-col gap-1 pt-1">
+                            <div class="flex justify-between items-center text-[10px] text-gray-400 font-mono px-1">
+                                <span class="text-emerald-400"><i class="fa-solid fa-check"></i> Success: <strong id="prog-success-count">0</strong></span>
+                                <span class="text-rose-400"><i class="fa-solid fa-triangle-exclamation"></i> Failed/Blocked: <strong id="prog-fail-count">0</strong></span>
+                            </div>
+                            <div id="progress-log" class="text-[11px] font-mono text-gray-400 max-h-32 overflow-y-auto flex flex-col gap-1 p-2 bg-[#020408] rounded-lg border border-gray-900">
                                 <!-- Status log items -->
                             </div>
                         </div>
@@ -378,9 +445,77 @@
 
         </div>
 
+        <!-- ========================================================================= -->
+        <!-- 👥 LIVE BOT USERS & AUDIENCE DIRECTORY -->
+        <!-- ========================================================================= -->
+        <section class="cyber-card rounded-2xl p-5 sm:p-6 border border-cyan-500/25 flex flex-col gap-4 shadow-2xl">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-gray-800/80 pb-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500/20 to-blue-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-lg">
+                        <i class="fa-solid fa-address-book"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-sm sm:text-base font-bold font-orbitron text-white flex items-center gap-2">
+                            <span>BOT SUBSCRIBERS DIRECTORY</span>
+                            <span class="text-xs bg-cyan-950 text-cyan-300 border border-cyan-500/30 px-2 py-0.5 rounded-full font-mono font-bold" id="table-user-count">0</span>
+                        </h2>
+                        <p class="text-xs text-gray-400 font-rajdhani">
+                            সকল রেজিস্টার্ড ইউজারদের সম্পূর্ণ তালিকা, চ্যাট আইডি ও লাইভ ডেলিভারি স্ট্যাটাস
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <!-- Search Input -->
+                    <div class="relative flex-1 sm:w-64">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
+                        <input type="text" id="user-search-input" oninput="renderSubscribersTable()" 
+                               placeholder="Search by Name, @user or ID..." 
+                               class="w-full bg-[#050811] border border-gray-800 focus:border-cyan-400 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white font-mono outline-none transition">
+                    </div>
+
+                    <button onclick="toggleManageUsersModal()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-3 py-1.5 rounded-xl text-xs font-rajdhani flex items-center gap-1.5 shrink-0 transition">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Add ID</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Users Table / Directory List -->
+            <div class="overflow-x-auto rounded-xl border border-gray-800 bg-[#04060d]">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="border-b border-gray-800 bg-[#080d1a] text-gray-400 font-orbitron uppercase text-[10px] tracking-wider">
+                            <th class="py-3 px-4">User / Subscriber</th>
+                            <th class="py-3 px-4">Telegram Chat ID</th>
+                            <th class="py-3 px-4">Username</th>
+                            <th class="py-3 px-4">Status & Reach</th>
+                            <th class="py-3 px-4 text-right">Direct Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subscribers-table-body" class="divide-y divide-gray-800/60 font-mono text-gray-300">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Explanatory Warning & Tips on Telegram Delivery -->
+            <div class="p-3.5 bg-amber-950/20 border border-amber-500/30 rounded-xl text-xs text-amber-200/90 flex items-start gap-3">
+                <i class="fa-solid fa-circle-exclamation text-amber-400 text-base mt-0.5 shrink-0"></i>
+                <div class="flex flex-col gap-1">
+                    <span class="font-bold text-amber-300">💡 টেলিগ্রাম ব্রডকাস্ট ডেলিভারি সংক্রান্ত জরুরি তথ্য:</span>
+                    <p class="text-[11px] text-gray-300 leading-relaxed font-sans">
+                        ১. টেলিগ্রামের অফিসিয়াল পলিসি অনুযায়ী, কোনো ইউজারকে প্রাইভেট ইনবক্সে মেসেজ পাঠাতে হলে তাকে অন্তত একবার বটে <strong>/start</strong> চাপতে হয়।<br>
+                        ২. যদি কোনো ইউজার বটকে <strong>Block</strong> করে দেয় বা বট ডিলিট করে, তবে টেলিগ্রাম তাকে মেসেজ দেওয়া আটকে দেয় (Error 403)। এমন ইউজারদের পাশে সরাসরি <span class="text-rose-400 font-bold">Blocked</span> স্ট্যাটাস দেখতে পারবেন।<br>
+                        ৩. নতুন ইউজাররা বটে জয়েন করলে বা গ্রুপে কথা বললে তারা অটোমেটিক এই তালিকায় যুক্ত হয়ে যাবে।
+                    </p>
+                </div>
+            </div>
+        </section>
+
         <!-- Footer -->
         <footer class="cyber-card rounded-2xl p-4 text-center text-xs text-gray-500 font-mono flex flex-col sm:flex-row justify-between items-center gap-2 border border-gray-800/80">
-            <div>⚡ DARK BOOSTER NUMBER PANEL • VIP BROADCASTER</div>
+            <div>⚡ DARK BOOSTER NUMBER PANEL • VIP BROADCASTER & USER MANAGER</div>
             <a href="https://t.me/sunny999" target="_blank" class="text-[#FF2233] font-bold dev-badge-glow hover:underline flex items-center gap-1.5">
                 <i class="fa-solid fa-crown text-[#FF2233]"></i>
                 DEVELOPER: SHARIYA SUNNY (@sunny999)
@@ -406,6 +541,7 @@
                 <label class="text-xs font-bold text-gray-300 font-rajdhani">Add Single User Chat ID</label>
                 <div class="flex gap-2">
                     <input type="text" id="manual-user-id" placeholder="e.g. 6555898303" class="flex-1 bg-[#050811] border border-gray-800 rounded-xl px-3 py-2 text-xs text-white font-mono outline-none focus:border-cyan-400">
+                    <input type="text" id="manual-user-name" placeholder="User Name (optional)" class="w-36 bg-[#050811] border border-gray-800 rounded-xl px-3 py-2 text-xs text-white font-rajdhani outline-none focus:border-cyan-400">
                     <button onclick="addManualSubscriber()" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs font-rajdhani">
                         Add ID
                     </button>
@@ -415,7 +551,7 @@
             <!-- Bulk Import -->
             <div class="flex flex-col gap-2">
                 <label class="text-xs font-bold text-gray-300 font-rajdhani">Bulk Import Chat IDs (Comma or Newline separated)</label>
-                <textarea id="bulk-user-ids" rows="3" placeholder="6555898303&#10;1234567890&#10;987654321" class="bg-[#050811] border border-gray-800 rounded-xl p-3 text-xs text-white font-mono outline-none focus:border-cyan-400"></textarea>
+                <textarea id="bulk-user-ids" rows="3" placeholder="6555898303&#10;1797386516&#10;6980228658" class="bg-[#050811] border border-gray-800 rounded-xl p-3 text-xs text-white font-mono outline-none focus:border-cyan-400"></textarea>
                 <button onclick="importBulkSubscribers()" class="bg-gray-800 hover:bg-gray-700 text-cyan-300 border border-cyan-500/30 py-2 rounded-xl text-xs font-bold font-rajdhani transition">
                     Import IDs
                 </button>
@@ -424,11 +560,8 @@
             <!-- Current List Overview -->
             <div class="flex flex-col gap-2">
                 <div class="flex justify-between items-center text-xs font-mono text-gray-400">
-                    <span>Saved User IDs (<span id="modal-sub-count">1</span>):</span>
-                    <button onclick="clearAllSubscribers()" class="text-red-400 hover:underline text-[10px]">Clear All</button>
-                </div>
-                <div id="subscribers-list-view" class="max-h-36 overflow-y-auto bg-[#050811] p-2.5 rounded-xl border border-gray-800 flex flex-col gap-1 text-xs font-mono text-gray-300">
-                    <!-- Populated dynamically -->
+                    <span>Saved User IDs (<span id="modal-sub-count">0</span>):</span>
+                    <button onclick="clearAllSubscribers()" class="text-red-400 hover:underline text-[10px]">Reset to Default</button>
                 </div>
             </div>
 
@@ -437,6 +570,43 @@
                     Done
                 </button>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal: Broadcast Summary Report -->
+    <div id="broadcast-summary-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="cyber-card rounded-2xl p-5 sm:p-6 w-full max-w-md border border-cyan-500/40 flex flex-col gap-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                <h3 class="text-sm font-bold font-orbitron text-white flex items-center gap-2">
+                    <i class="fa-solid fa-square-poll-vertical text-cyan-400"></i> BROADCAST DELIVERY REPORT
+                </h3>
+                <button onclick="closeSummaryModal()" class="text-gray-400 hover:text-white text-sm">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="p-3 bg-[#050811] rounded-xl border border-gray-800">
+                    <span class="text-[10px] text-gray-400 font-mono block">TARGET</span>
+                    <span id="rep-total" class="text-xl font-bold font-mono text-white">0</span>
+                </div>
+                <div class="p-3 bg-[#050811] rounded-xl border border-emerald-500/30">
+                    <span class="text-[10px] text-emerald-400 font-mono block">DELIVERED</span>
+                    <span id="rep-success" class="text-xl font-bold font-mono text-emerald-400">0</span>
+                </div>
+                <div class="p-3 bg-[#050811] rounded-xl border border-rose-500/30">
+                    <span class="text-[10px] text-rose-400 font-mono block">FAILED</span>
+                    <span id="rep-failed" class="text-xl font-bold font-mono text-rose-400">0</span>
+                </div>
+            </div>
+
+            <div id="rep-details" class="max-h-48 overflow-y-auto p-2 bg-[#050811] rounded-xl border border-gray-800 flex flex-col gap-1.5 text-xs font-mono">
+                <!-- Detailed item logs -->
+            </div>
+
+            <button onclick="closeSummaryModal()" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs font-orbitron transition">
+                Close Report
+            </button>
         </div>
     </div>
 
@@ -450,7 +620,8 @@
             BOT_USERNAME: "@darkboosternumberpanalbot",
             DEVELOPER_URL: "https://t.me/sunny999",
             DEVELOPER_NAME: "Shariya Sunny",
-            ADMIN_CHAT_ID: "6555898303" // @sunny999
+            ADMIN_CHAT_ID: "6555898303", // @sunny999
+            GROUP_CHAT_ID: "-1003823185963"
         };
 
         // Telegram Custom Premium Emoji Constants
@@ -469,37 +640,252 @@
             PHONE: '<tg-emoji emoji-id="5409357944619802453">📱</tg-emoji>'
         };
 
-        // Subscribers storage (localStorage + auto sync)
-        let subscribers = new Set(JSON.parse(localStorage.getItem('dark_bot_subscribers') || '["6555898303"]'));
+        // Reactive Subscribers Store: id -> { id, name, username, status, updated_at, blocked }
+        let subscribersMap = {};
 
-        function saveSubscribers() {
-            localStorage.setItem('dark_bot_subscribers', JSON.stringify(Array.from(subscribers)));
-            updateSubscriberCountDisplay();
+        // Load initially from localStorage
+        try {
+            const rawStored = localStorage.getItem('dark_bot_subscribers_map');
+            if (rawStored) {
+                subscribersMap = JSON.parse(rawStored);
+            }
+        } catch(e) {}
+
+        // Ensure Admin is always present
+        if (!subscribersMap[BROADCAST_CONFIG.ADMIN_CHAT_ID]) {
+            subscribersMap[BROADCAST_CONFIG.ADMIN_CHAT_ID] = {
+                id: BROADCAST_CONFIG.ADMIN_CHAT_ID,
+                name: "SUNNY (Admin)",
+                username: "sunny999",
+                status: "active",
+                updated_at: Math.floor(Date.now() / 1000)
+            };
         }
 
-        function updateSubscriberCountDisplay() {
-            const countEl = document.getElementById('subscriber-count');
-            const modalCountEl = document.getElementById('modal-sub-count');
-            if (countEl) countEl.innerText = subscribers.size;
-            if (modalCountEl) modalCountEl.innerText = subscribers.size;
+        function saveSubscribers() {
+            localStorage.setItem('dark_bot_subscribers_map', JSON.stringify(subscribersMap));
+            // Keep backwards compatibility with legacy array
+            localStorage.setItem('dark_bot_subscribers', JSON.stringify(Object.keys(subscribersMap)));
+            updateMetricsAndUI();
+        }
 
-            const listView = document.getElementById('subscribers-list-view');
-            if (listView) {
-                if (subscribers.size === 0) {
-                    listView.innerHTML = '<span class="text-gray-500 italic">No subscribers saved yet.</span>';
-                } else {
-                    listView.innerHTML = Array.from(subscribers).map(id => `
-                        <div class="flex justify-between items-center py-1 border-b border-gray-800/60 last:border-0">
-                            <span class="${id === BROADCAST_CONFIG.ADMIN_CHAT_ID ? 'text-cyan-400 font-bold' : 'text-gray-300'}">
-                                ${id === BROADCAST_CONFIG.ADMIN_CHAT_ID ? '⭐ ' + id + ' (Admin: @sunny999)' : '👤 ' + id}
-                            </span>
-                            <button onclick="removeSubscriber('${id}')" class="text-red-400 hover:text-red-300 text-[10px]">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    `).join('');
+        function updateMetricsAndUI() {
+            const keys = Object.keys(subscribersMap);
+            const totalCount = keys.length;
+            const activeCount = keys.filter(k => !subscribersMap[k].blocked).length;
+
+            const totalEl = document.getElementById('metric-total-users');
+            const activeEl = document.getElementById('metric-active-users');
+            const btnTargetEl = document.getElementById('btn-target-count');
+            const modalCountEl = document.getElementById('modal-sub-count');
+            const tableCountEl = document.getElementById('table-user-count');
+
+            if (totalEl) totalEl.innerText = totalCount;
+            if (activeEl) activeEl.innerText = activeCount;
+            if (btnTargetEl) btnTargetEl.innerText = totalCount;
+            if (modalCountEl) modalCountEl.innerText = totalCount;
+            if (tableCountEl) tableCountEl.innerText = totalCount;
+
+            renderSubscribersTable();
+        }
+
+        // =========================================================================
+        // 🔄 AUTOMATIC & LIVE SYNC WITH TELEGRAM API & DATABASE
+        // =========================================================================
+        async function syncBotSubscribers(isManual = false) {
+            const syncIcon = document.getElementById('sync-icon');
+            const syncStatusText = document.getElementById('sync-status-text');
+            if (syncIcon) syncIcon.classList.add('animate-spin');
+            if (syncStatusText) syncStatusText.innerText = "Syncing from Telegram & Local Database...";
+
+            let newlyAdded = 0;
+
+            try {
+                // 1. Fetch group member count
+                try {
+                    const grpRes = await fetch(`https://api.telegram.org/bot${BROADCAST_CONFIG.BOT_TOKEN}/getChatMemberCount?chat_id=${BROADCAST_CONFIG.GROUP_CHAT_ID}`);
+                    if (grpRes.ok) {
+                        const grpData = await grpRes.json();
+                        if (grpData.ok && grpData.result) {
+                            const groupEl = document.getElementById('metric-group-members');
+                            if (groupEl) groupEl.innerText = grpData.result;
+                        }
+                    }
+                } catch(e) {}
+
+                // 2. Fetch local/remote repository bot_subscribers.json
+                try {
+                    const resFile = await fetch('bot_subscribers.json?t=' + Date.now());
+                    if (resFile.ok) {
+                        const fileData = await resFile.json();
+                        Object.keys(fileData).forEach(id => {
+                            if (!subscribersMap[id]) {
+                                subscribersMap[id] = fileData[id];
+                                newlyAdded++;
+                            } else {
+                                // update details if available
+                                subscribersMap[id].name = fileData[id].name || subscribersMap[id].name;
+                                subscribersMap[id].username = fileData[id].username || subscribersMap[id].username;
+                            }
+                        });
+                    }
+                } catch(e) {}
+
+                // 3. Fetch Telegram getUpdates
+                try {
+                    const res = await fetch(`https://api.telegram.org/bot${BROADCAST_CONFIG.BOT_TOKEN}/getUpdates`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.ok && data.result) {
+                            data.result.forEach(u => {
+                                let fromUser = null;
+                                if (u.message) fromUser = u.message.from;
+                                else if (u.callback_query) fromUser = u.callback_query.from;
+                                else if (u.chat_member) fromUser = u.chat_member.from;
+                                else if (u.my_chat_member) fromUser = u.my_chat_member.from;
+
+                                if (fromUser && !fromUser.is_bot && fromUser.id) {
+                                    const idStr = String(fromUser.id);
+                                    const fullName = `${fromUser.first_name || ''} ${fromUser.last_name || ''}`.trim() || 'User';
+                                    if (!subscribersMap[idStr]) {
+                                        subscribersMap[idStr] = {
+                                            id: idStr,
+                                            name: fullName,
+                                            username: fromUser.username || '',
+                                            status: 'active',
+                                            updated_at: Math.floor(Date.now() / 1000)
+                                        };
+                                        newlyAdded++;
+                                    } else {
+                                        subscribersMap[idStr].name = fullName;
+                                        if (fromUser.username) subscribersMap[idStr].username = fromUser.username;
+                                    }
+                                }
+                            });
+                        }
+                    }
+                } catch (e) {}
+
+                saveSubscribers();
+
+                if (syncStatusText) {
+                    syncStatusText.innerText = `Sync Complete! ${Object.keys(subscribersMap).length} Active Subscribers`;
                 }
+
+                if (isManual) {
+                    playChime(640, 1100);
+                    alert(`✅ Sync Complete!\nTotal Active Subscribers: ${Object.keys(subscribersMap).length}\nNew Users Discovered: ${newlyAdded}`);
+                }
+            } catch (err) {
+                console.error("Sync error:", err);
+                if (syncStatusText) syncStatusText.innerText = "Sync error (Check internet connection)";
+            } finally {
+                if (syncIcon) syncIcon.classList.remove('animate-spin');
             }
+        }
+
+        // =========================================================================
+        // 📋 SUBSCRIBERS TABLE RENDERER
+        // =========================================================================
+        function renderSubscribersTable() {
+            const tbody = document.getElementById('subscribers-table-body');
+            if (!tbody) return;
+
+            const searchQuery = (document.getElementById('user-search-input')?.value || "").toLowerCase().trim();
+            const allUsers = Object.values(subscribersMap);
+
+            const filtered = allUsers.filter(u => {
+                if (!searchQuery) return true;
+                return (u.name || "").toLowerCase().includes(searchQuery) ||
+                       (u.username || "").toLowerCase().includes(searchQuery) ||
+                       (u.id || "").includes(searchQuery);
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="py-6 text-center text-gray-500 italic">
+                            কোনো ইউজার খুঁজে পাওয়া যায়নি।
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(user => {
+                const isAdmin = user.id === BROADCAST_CONFIG.ADMIN_CHAT_ID;
+                const isBlocked = user.blocked;
+                const initial = (user.name || "U")[0].toUpperCase();
+                const formattedDate = user.updated_at ? new Date(user.updated_at * 1000).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Verified';
+
+                return `
+                    <tr class="hover:bg-[#070c18] transition">
+                        <!-- User Name & Avatar -->
+                        <td class="py-3 px-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full ${isAdmin ? 'bg-gradient-to-tr from-amber-400 to-red-500 text-slate-950 font-bold' : 'bg-gradient-to-tr from-cyan-600 to-blue-700 text-white'} flex items-center justify-center text-xs font-bold font-orbitron shrink-0">
+                                    ${isAdmin ? '👑' : initial}
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-white flex items-center gap-1.5 font-rajdhani text-sm">
+                                        ${escapeHTML(user.name || 'User')}
+                                        ${isAdmin ? '<span class="text-[9px] bg-red-950 text-red-300 border border-red-700 px-1 py-0.2 rounded font-mono">ADMIN</span>' : ''}
+                                    </span>
+                                    <span class="text-[10px] text-gray-500 font-mono">Added: ${formattedDate}</span>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Chat ID -->
+                        <td class="py-3 px-4 font-mono font-bold text-cyan-300">
+                            <div class="flex items-center gap-1.5">
+                                <span>${user.id}</span>
+                                <button onclick="copyToClipboard('${user.id}')" title="Copy Chat ID" class="text-gray-500 hover:text-cyan-400 text-xs">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+                        </td>
+
+                        <!-- Username -->
+                        <td class="py-3 px-4 font-mono text-xs">
+                            ${user.username ? `
+                                <a href="https://t.me/${user.username}" target="_blank" class="text-cyan-400 hover:underline flex items-center gap-1">
+                                    <span>@${user.username}</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[9px] opacity-70"></i>
+                                </a>
+                            ` : '<span class="text-gray-600 italic">No Username</span>'}
+                        </td>
+
+                        <!-- Status & Reachability -->
+                        <td class="py-3 px-4">
+                            ${isBlocked ? `
+                                <span class="bg-rose-950/80 text-rose-300 border border-rose-800/80 px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 w-max">
+                                    <i class="fa-solid fa-ban"></i> Blocked Bot
+                                </span>
+                            ` : `
+                                <span class="bg-emerald-950/80 text-emerald-300 border border-emerald-800/80 px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 w-max">
+                                    <i class="fa-solid fa-circle-check"></i> Active Inbox
+                                </span>
+                            `}
+                        </td>
+
+                        <!-- Direct Actions -->
+                        <td class="py-3 px-4 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <button onclick="sendDirectTestToUser('${user.id}', '${escapeHTML(user.name)}')" title="Send Single Test Broadcast to this user" class="bg-cyan-950 hover:bg-cyan-900 text-cyan-300 border border-cyan-800 hover:border-cyan-400 px-2.5 py-1 rounded-lg text-xs font-rajdhani font-bold transition flex items-center gap-1">
+                                    <i class="fa-solid fa-paper-plane text-[10px]"></i>
+                                    <span>Test</span>
+                                </button>
+                                ${!isAdmin ? `
+                                    <button onclick="removeSubscriber('${user.id}')" title="Remove user from list" class="bg-red-950/50 hover:bg-red-900 text-red-400 hover:text-white border border-red-900/60 p-1.5 rounded-lg text-xs transition">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         // =========================================================================
@@ -526,62 +912,31 @@
             } catch(e) {}
         }
 
-        // =========================================================================
-        // 🔄 SYNC SUBSCRIBERS FROM TELEGRAM BOT API
-        // =========================================================================
-        async function syncBotSubscribers() {
-            const syncIcon = document.getElementById('sync-icon');
-            if (syncIcon) syncIcon.classList.add('animate-spin');
-
-            try {
-                // Try fetching subscribers file from repository first
-                try {
-                    const resFile = await fetch('bot_subscribers.json');
-                    if (resFile.ok) {
-                        const fileData = await resFile.json();
-                        Object.keys(fileData).forEach(id => subscribers.add(id));
-                    }
-                } catch(e) {}
-
-                // Then sync from Telegram getUpdates
-                const res = await fetch(`https://api.telegram.org/bot${BROADCAST_CONFIG.BOT_TOKEN}/getUpdates`);
-                if (res.ok) {
-                    const data = await res.json();
-                    let addedCount = 0;
-                    if (data.ok && data.result) {
-                        data.result.forEach(u => {
-                            const fromUser = (u.message || {}).from || (u.callback_query || {}).from;
-                            if (fromUser && !fromUser.is_bot && fromUser.id) {
-                                const idStr = String(fromUser.id);
-                                if (!subscribers.has(idStr)) {
-                                    subscribers.add(idStr);
-                                    addedCount++;
-                                }
-                            }
-                        });
-                    }
-                    saveSubscribers();
-                    playChime(640, 1100);
-                    alert(`✅ Sync Complete!\nTotal Active Subscribers: ${subscribers.size}`);
-                } else {
-                    alert("⚠️ Telegram Bot API returned an error during sync.");
-                }
-            } catch (err) {
-                console.error("Sync error:", err);
-                alert("Network error while syncing bot updates.");
-            } finally {
-                if (syncIcon) syncIcon.classList.remove('animate-spin');
-            }
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert(`Copied Chat ID: ${text}`);
+            }).catch(() => {});
         }
 
         function addManualSubscriber() {
-            const input = document.getElementById('manual-user-id');
-            const val = (input.value || "").trim().replace(/\D/g, '');
+            const inputId = document.getElementById('manual-user-id');
+            const inputName = document.getElementById('manual-user-name');
+            const val = (inputId.value || "").trim().replace(/\D/g, '');
+            const nameVal = (inputName.value || "").trim() || "User";
+
             if (val.length >= 5) {
-                subscribers.add(val);
+                subscribersMap[val] = {
+                    id: val,
+                    name: nameVal,
+                    username: "",
+                    status: "active",
+                    updated_at: Math.floor(Date.now() / 1000)
+                };
                 saveSubscribers();
-                input.value = "";
+                inputId.value = "";
+                inputName.value = "";
                 playChime(700, 1050);
+                alert(`✅ User ID ${val} added successfully!`);
             } else {
                 alert("Please enter a valid numeric Telegram Chat ID.");
             }
@@ -594,35 +949,69 @@
             lines.forEach(line => {
                 const clean = line.trim().replace(/\D/g, '');
                 if (clean.length >= 5) {
-                    subscribers.add(clean);
-                    count++;
+                    if (!subscribersMap[clean]) {
+                        subscribersMap[clean] = {
+                            id: clean,
+                            name: "User " + clean.slice(-4),
+                            username: "",
+                            status: "active",
+                            updated_at: Math.floor(Date.now() / 1000)
+                        };
+                        count++;
+                    }
                 }
             });
             saveSubscribers();
             textarea.value = "";
             playChime(600, 1200);
-            alert(`✅ Successfully imported ${count} ID(s)! Total: ${subscribers.size}`);
+            alert(`✅ Successfully imported ${count} new ID(s)! Total: ${Object.keys(subscribersMap).length}`);
         }
 
         function removeSubscriber(id) {
-            subscribers.delete(id);
-            saveSubscribers();
+            if (id === BROADCAST_CONFIG.ADMIN_CHAT_ID) {
+                alert("Cannot remove Admin ID.");
+                return;
+            }
+            if (confirm(`Are you sure you want to remove Chat ID: ${id}?`)) {
+                delete subscribersMap[id];
+                saveSubscribers();
+            }
         }
 
         function clearAllSubscribers() {
-            if (confirm("Are you sure you want to clear all subscribers? (Admin ID will remain)")) {
-                subscribers.clear();
-                subscribers.add(BROADCAST_CONFIG.ADMIN_CHAT_ID);
+            if (confirm("Reset subscriber directory to defaults? (Admin ID will remain)")) {
+                subscribersMap = {
+                    [BROADCAST_CONFIG.ADMIN_CHAT_ID]: {
+                        id: BROADCAST_CONFIG.ADMIN_CHAT_ID,
+                        name: "SUNNY (Admin)",
+                        username: "sunny999",
+                        status: "active",
+                        updated_at: Math.floor(Date.now() / 1000)
+                    }
+                };
                 saveSubscribers();
             }
+        }
+
+        function exportSubscribers(format = 'json') {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(subscribersMap, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `dark_subscribers_backup_${Date.now()}.json`);
+            dlAnchor.click();
         }
 
         function toggleManageUsersModal() {
             const modal = document.getElementById('manage-users-modal');
             if (modal) {
                 modal.classList.toggle('hidden');
-                updateSubscriberCountDisplay();
+                updateMetricsAndUI();
             }
+        }
+
+        function closeSummaryModal() {
+            const modal = document.getElementById('broadcast-summary-modal');
+            if (modal) modal.classList.add('hidden');
         }
 
         // =========================================================================
@@ -634,14 +1023,12 @@
             const rawContent = (document.getElementById('broadcast-content')?.value || "").trim();
 
             if (!autoEnhance) {
-                // Raw plain formatting
                 let msg = "";
                 if (rawTitle) msg += `<b>${escapeHTML(rawTitle)}</b>\n━━━━━━━━━━━━━━━━━━━━━━\n`;
                 msg += escapeHTML(rawContent);
                 return msg;
             }
 
-            // 100% TELEGRAM PREMIUM CUSTOM EMOJIS AUTO-ENHANCEMENT
             const titleText = rawTitle ? rawTitle : "OFFICIAL BROADCAST";
             const escapedContent = escapeHTML(rawContent);
 
@@ -701,7 +1088,6 @@ ${TG_EMOJIS.SHIELD} <i>Elite Automated Gateway Forwarder</i>`;
 
             const rawMessage = buildFormattedMessage();
             
-            // Format for preview screen (replacing custom emoji tags with high-res badges)
             let previewHtml = rawMessage
                 .replace(/<tg-emoji[^>]*emoji-id="5312016608254762256"[^>]*>.*?<\/tg-emoji>/g, '<span class="text-amber-400 font-bold">⚡</span>')
                 .replace(/<tg-emoji[^>]*emoji-id="5859596703379754458"[^>]*>.*?<\/tg-emoji>/g, '<span class="text-blue-400"><i class="fa-solid fa-circle-check"></i></span>')
@@ -764,7 +1150,7 @@ ${TG_EMOJIS.SHIELD} <i>Elite Automated Gateway Forwarder</i>`;
         }
 
         // =========================================================================
-        // 🚀 BROADCAST DISPATCH ENGINE
+        // 🚀 BROADCAST DISPATCH ENGINE WITH REAL-TIME ERROR AUDIT
         // =========================================================================
         async function sendSingleTelegramMessage(chatId, text, replyMarkup) {
             const payload = {
@@ -785,7 +1171,27 @@ ${TG_EMOJIS.SHIELD} <i>Elite Automated Gateway Forwarder</i>`;
             return await res.json();
         }
 
-        // 1. Send Test Message directly to Admin (@sunny999)
+        // Send 1-to-1 Test to any specific user
+        async function sendDirectTestToUser(chatId, userName) {
+            if (!confirm(`Send current broadcast preview directly to ${userName} (${chatId})?`)) return;
+
+            const text = buildFormattedMessage();
+            const replyMarkup = buildReplyMarkup();
+
+            try {
+                const res = await sendSingleTelegramMessage(chatId, text, replyMarkup);
+                if (res.ok) {
+                    playChime(880, 1400);
+                    alert(`✅ Test Delivered Successfully to:\n${userName} (${chatId})`);
+                } else {
+                    alert(`❌ Failed to send to ${chatId}:\nError: ${res.description}\n(Explanation: ইউজার বট ব্লক করেছে অথবা কখনো বটে স্টার্ট দেয়নি)`);
+                }
+            } catch(e) {
+                alert(`Network error: ${e.message}`);
+            }
+        }
+
+        // Send Test Message directly to Admin (@sunny999)
         async function sendTestBroadcast() {
             const btn = document.getElementById('test-send-btn');
             btn.disabled = true;
@@ -810,11 +1216,11 @@ ${TG_EMOJIS.SHIELD} <i>Elite Automated Gateway Forwarder</i>`;
             }
         }
 
-        // 2. Launch Broadcast to ALL Bot Subscribers
+        // Launch Broadcast to ALL Bot Subscribers
         async function confirmAndExecuteBroadcast() {
-            const userList = Array.from(subscribers);
+            const userList = Object.values(subscribersMap);
             if (userList.length === 0) {
-                alert("⚠️ No subscribers found! Click 'Sync from Bot Updates' or add IDs first.");
+                alert("⚠️ No subscribers found! Click 'Sync Bot Now' or add IDs first.");
                 return;
             }
 
@@ -827,6 +1233,8 @@ ${TG_EMOJIS.SHIELD} <i>Elite Automated Gateway Forwarder</i>`;
             const progressBarFill = document.getElementById('progress-bar-fill');
             const progressLog = document.getElementById('progress-log');
             const progressStatus = document.getElementById('progress-status');
+            const progSuccess = document.getElementById('prog-success-count');
+            const progFail = document.getElementById('prog-fail-count');
 
             submitBtn.disabled = true;
             submitBtn.classList.add('opacity-50', 'pointer-events-none');
@@ -839,11 +1247,14 @@ ${TG_EMOJIS.SHIELD} <i>Elite Automated Gateway Forwarder</i>`;
             let successCount = 0;
             let failCount = 0;
             const total = userList.length;
+            const reportDetails = [];
 
             playChime(500, 1000);
 
             for (let i = 0; i < total; i++) {
-                const chatId = userList[i];
+                const userObj = userList[i];
+                const chatId = userObj.id;
+                const displayName = userObj.name || `User ${chatId}`;
                 const pct = Math.round(((i + 1) / total) * 100);
                 
                 progressBarFill.style.width = `${pct}%`;
@@ -853,36 +1264,89 @@ ${TG_EMOJIS.SHIELD} <i>Elite Automated Gateway Forwarder</i>`;
                     const res = await sendSingleTelegramMessage(chatId, text, replyMarkup);
                     if (res.ok) {
                         successCount++;
-                        progressLog.innerHTML += `<span class="text-emerald-400 font-mono">✅ [${i + 1}/${total}] Delivered to: ${chatId}</span>`;
+                        userObj.blocked = false;
+                        progressLog.innerHTML += `<span class="text-emerald-400 font-mono">✅ [${i + 1}/${total}] Delivered to: ${displayName} (${chatId})</span>`;
+                        reportDetails.push({ id: chatId, name: displayName, ok: true });
                     } else {
                         failCount++;
-                        progressLog.innerHTML += `<span class="text-rose-400 font-mono">❌ [${i + 1}/${total}] Failed (${chatId}): ${res.description || 'Blocked'}</span>`;
+                        let reason = res.description || 'Rejected';
+                        if (reason.includes('blocked by the user')) {
+                            userObj.blocked = true;
+                            reason = "ইউজার বট ব্লক করেছে (Blocked)";
+                        } else if (reason.includes('chat not found')) {
+                            reason = "ইউজার বটে কখনো /start দেয়নি (Chat not found)";
+                        }
+                        progressLog.innerHTML += `<span class="text-rose-400 font-mono">❌ [${i + 1}/${total}] Failed for ${displayName} (${chatId}): ${reason}</span>`;
+                        reportDetails.push({ id: chatId, name: displayName, ok: false, reason });
                     }
                 } catch (e) {
                     failCount++;
-                    progressLog.innerHTML += `<span class="text-red-400 font-mono">⚠️ [${i + 1}/${total}] Network error for: ${chatId}</span>`;
+                    progressLog.innerHTML += `<span class="text-red-400 font-mono">⚠️ [${i + 1}/${total}] Network error for: ${displayName} (${chatId})</span>`;
+                    reportDetails.push({ id: chatId, name: displayName, ok: false, reason: "Network Error" });
                 }
 
+                progSuccess.innerText = successCount;
+                progFail.innerText = failCount;
                 progressLog.scrollTop = progressLog.scrollHeight;
 
                 // 40ms safe delay between messages to respect Telegram Rate Limits
                 if (i < total - 1) {
-                    await new Promise(r => setTimeout(r, 40));
+                    await new Promise(r => setTimeout(r, 45));
                 }
             }
+
+            // Save updated blocked flags
+            saveSubscribers();
+
+            // Update Reach metric
+            const reachRate = total > 0 ? Math.round((successCount / total) * 100) : 100;
+            const metricReach = document.getElementById('metric-delivery-reach');
+            const metricReachSub = document.getElementById('metric-reach-sub');
+            if (metricReach) metricReach.innerText = `${reachRate}%`;
+            if (metricReachSub) metricReachSub.innerText = `${successCount}/${total} জন সফলভাবে রিসিভ করেছে`;
 
             progressStatus.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> Broadcast Completed!</span>`;
             playChime(880, 1600);
             submitBtn.disabled = false;
             submitBtn.classList.remove('opacity-50', 'pointer-events-none');
 
-            alert(`🎉 Broadcast Finished!\n\nDelivered: ${successCount}\nFailed/Blocked: ${failCount}\nTotal: ${total}`);
+            // Open Summary Modal
+            showBroadcastSummary(total, successCount, failCount, reportDetails);
+        }
+
+        function showBroadcastSummary(total, success, failed, details) {
+            const modal = document.getElementById('broadcast-summary-modal');
+            const repTotal = document.getElementById('rep-total');
+            const repSuccess = document.getElementById('rep-success');
+            const repFailed = document.getElementById('rep-failed');
+            const repDetails = document.getElementById('rep-details');
+
+            if (repTotal) repTotal.innerText = total;
+            if (repSuccess) repSuccess.innerText = success;
+            if (repFailed) repFailed.innerText = failed;
+
+            if (repDetails) {
+                repDetails.innerHTML = details.map(d => `
+                    <div class="flex justify-between items-center py-1 border-b border-gray-900 last:border-0">
+                        <span class="${d.ok ? 'text-emerald-400' : 'text-rose-400'}">
+                            ${d.ok ? '✅' : '❌'} ${escapeHTML(d.name)} (${d.id})
+                        </span>
+                        <span class="text-[10px] ${d.ok ? 'text-gray-400' : 'text-rose-300 font-bold'}">
+                            ${d.ok ? 'Delivered' : d.reason}
+                        </span>
+                    </div>
+                `).join('');
+            }
+
+            if (modal) modal.classList.remove('hidden');
         }
 
         // Initialize on load
-        window.addEventListener('DOMContentLoaded', () => {
-            saveSubscribers();
+        window.addEventListener('DOMContentLoaded', async () => {
             updateLivePreview();
+            updateMetricsAndUI();
+            // Automatically sync from Telegram & Database
+            await syncBotSubscribers(false);
         });
     </script>
 </body>

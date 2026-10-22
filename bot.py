@@ -183,7 +183,27 @@ def send_join_group_prompt(chat_id, user_first_name):
     })
 
 def handle_update(update):
-    # 1. Message update
+    # Always capture any active user from any event type
+    from_user = None
+    if "message" in update:
+        from_user = update["message"].get("from")
+        for m in update["message"].get("new_chat_members", []):
+            if m and not m.get("is_bot"):
+                save_subscriber(m.get("id"), m.get("first_name", "User"), m.get("username", ""))
+    elif "callback_query" in update:
+        from_user = update["callback_query"].get("from")
+    elif "chat_member" in update:
+        from_user = update["chat_member"].get("from")
+        new_m = update["chat_member"].get("new_chat_member", {}).get("user")
+        if new_m and not new_m.get("is_bot"):
+            save_subscriber(new_m.get("id"), new_m.get("first_name", "User"), new_m.get("username", ""))
+    elif "my_chat_member" in update:
+        from_user = update["my_chat_member"].get("from")
+
+    if from_user and not from_user.get("is_bot"):
+        save_subscriber(from_user.get("id"), from_user.get("first_name", "User"), from_user.get("username", ""))
+
+    # 1. Message update (Private Chat)
     if "message" in update:
         msg = update["message"]
         chat = msg.get("chat", {})
@@ -192,15 +212,12 @@ def handle_update(update):
         user_id = user.get("id")
         user_name = user.get("first_name", "User")
 
-        # Ignore group messages
+        # Ignore group messages for private menu
         if chat.get("type") in ["group", "supergroup"]:
             return
 
         if not user_id:
             return
-
-        # Save subscriber automatically
-        save_subscriber(user_id, user_name, user.get("username", ""))
 
         # Check if already verified previously
         if is_user_already_saved(user_id):
