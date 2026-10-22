@@ -253,7 +253,7 @@
                                     <span class="text-[9px] bg-blue-950 text-blue-300 px-1.5 py-0.5 rounded font-mono">⚡ 3D Spark</span>
                                 </div>
                                 <input type="text" id="btn1-text" value="Open Dark Booster Panel" oninput="updateLivePreview()" class="bg-gray-900 border border-gray-800 rounded-lg px-2.5 py-1.5 text-xs text-white">
-                                <input type="text" id="btn1-url" value="https://sshariyasunny.github.io/dark-number-panel/" oninput="updateLivePreview()" class="bg-gray-900 border border-gray-800 rounded-lg px-2.5 py-1.5 text-[11px] text-gray-400 font-mono">
+                                <input type="text" id="btn1-url" value="https://t.me/darkboosternumberpanalbot/darkotp" oninput="updateLivePreview()" class="bg-gray-900 border border-gray-800 rounded-lg px-2.5 py-1.5 text-[11px] text-gray-400 font-mono">
                             </div>
 
                             <div class="p-3 bg-[#050811] rounded-xl border border-gray-800 flex flex-col gap-2">
@@ -352,7 +352,7 @@
 
                         <!-- Mock Interactive Buttons -->
                         <div id="preview-buttons-area" class="grid grid-cols-2 gap-2 mt-1">
-                            <a href="#" class="bg-[#2b5278] hover:bg-[#346290] text-white text-center py-2.5 rounded-xl font-medium text-xs flex items-center justify-center gap-1.5 transition shadow">
+                            <a id="mock-btn1-link" href="https://t.me/darkboosternumberpanalbot/darkotp" target="_blank" class="bg-[#2b5278] hover:bg-[#346290] text-white text-center py-2.5 rounded-xl font-medium text-xs flex items-center justify-center gap-1.5 transition shadow">
                                 <span class="text-sm">⚡</span>
                                 <span id="mock-btn1-text">Open Dark Booster Panel</span>
                                 <i class="fa-solid fa-arrow-up-right-from-square text-[9px] opacity-75"></i>
@@ -663,7 +663,7 @@ ${TG_EMOJIS.SHIELD} <i>Elite Automated Gateway Forwarder</i>`;
             if (!showButtons) return null;
 
             const btn1Text = document.getElementById('btn1-text')?.value || "Open Dark Booster Panel";
-            const btn1Url = document.getElementById('btn1-url')?.value || "https://sshariyasunny.github.io/dark-number-panel/";
+            const btn1Url = document.getElementById('btn1-url')?.value || "https://t.me/darkboosternumberpanalbot/darkotp";
 
             const btn2Text = document.getElementById('btn2-text')?.value || "Contact Developer";
             const btn2Url = document.getElementById('btn2-url')?.value || "https://t.me/sunny999";
@@ -721,6 +721,8 @@ ${TG_EMOJIS.SHIELD} <i>Elite Automated Gateway Forwarder</i>`;
                 previewButtonsArea.style.display = showButtons ? 'grid' : 'none';
             }
             if (mockBtn1Text) mockBtn1Text.innerText = document.getElementById('btn1-text')?.value || "Open Dark Booster Panel";
+            const mockBtn1Link = document.getElementById('mock-btn1-link');
+            if (mockBtn1Link) mockBtn1Link.href = document.getElementById('btn1-url')?.value || "https://t.me/darkboosternumberpanalbot/darkotp";
             if (mockBtn2Text) mockBtn2Text.innerText = document.getElementById('btn2-text')?.value || "Contact Developer";
         }
 

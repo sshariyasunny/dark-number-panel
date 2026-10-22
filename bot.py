@@ -114,7 +114,7 @@ def send_welcome_panel(chat_id, user_first_name):
             [
                 {
                     "text": "Open Dark Booster Panel",
-                    "web_app": {"url": WEB_APP_URL},
+                    "url": "https://t.me/darkboosternumberpanalbot/darkotp",
                     "icon_custom_emoji_id": "5312016608254762256",
                     "style": "primary"
                 }
@@ -253,7 +253,7 @@ def handle_update(update):
                         [
                             {
                                 "text": "Open Dark Booster Panel",
-                                "web_app": {"url": WEB_APP_URL},
+                                "url": "https://t.me/darkboosternumberpanalbot/darkotp",
                                 "icon_custom_emoji_id": "5312016608254762256",
                                 "style": "primary"
                             }
