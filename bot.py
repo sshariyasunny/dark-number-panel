@@ -25,6 +25,7 @@ WEB_APP_URL = "https://sshariyasunny.github.io/dark-number-panel/"
 
 # File to store users who have already verified so they are NEVER asked again
 VERIFIED_USERS_FILE = os.path.join(os.path.dirname(__file__), "verified_users.json")
+SUBSCRIBERS_FILE = os.path.join(os.path.dirname(__file__), "bot_subscribers.json")
 
 def load_verified_users():
     if os.path.exists(VERIFIED_USERS_FILE):
@@ -47,6 +48,29 @@ def save_verified_user(user_id):
 def is_user_already_saved(user_id):
     users = load_verified_users()
     return str(user_id) in users
+
+def load_subscribers():
+    if os.path.exists(SUBSCRIBERS_FILE):
+        try:
+            with open(SUBSCRIBERS_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return {}
+    return {}
+
+def save_subscriber(user_id, first_name="", username=""):
+    subs = load_subscribers()
+    subs[str(user_id)] = {
+        "id": str(user_id),
+        "name": first_name or "User",
+        "username": username or "",
+        "updated_at": int(time.time())
+    }
+    try:
+        with open(SUBSCRIBERS_FILE, "w", encoding="utf-8") as f:
+            json.dump(subs, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print("Error saving subscriber:", e)
 
 API_BASE = f"https://api.telegram.org/bot{BOT_TOKEN}"
 
@@ -75,13 +99,13 @@ def is_user_member_of_group(user_id):
 
 def send_welcome_panel(chat_id, user_first_name):
     text = (
-        f"⚡ <b>DARK BOOSTER NUMBER PANEL</b> ⚡\n"
+        f"<tg-emoji emoji-id=\"5312016608254762256\">⚡</tg-emoji> <b>DARK BOOSTER NUMBER PANEL</b> <tg-emoji emoji-id=\"5859596703379754458\">✅</tg-emoji>\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"👋 হ্যালো <b>{user_first_name}</b>, স্বাগতম!\n"
-        f"✅ আপনি একজন অথরাইজড মেম্বার।\n\n"
+        f"<tg-emoji emoji-id=\"5857059984025587700\">✅</tg-emoji> আপনি একজন অথরাইজড মেম্বার।\n\n"
         f"এখন আপনি যেকোনো কান্ট্রির ভার্চুয়াল নম্বর এবং লাইভ ওটিপি নিয়ে সরাসরি কাজ করতে পারবেন।\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"👑 <b>Developer:</b> <b>Shariya Sunny</b>\n"
+        f"<tg-emoji emoji-id=\"5357107601584693888\">👑</tg-emoji> <b>Developer:</b> <a href=\"https://t.me/sunny999\"><b>Shariya Sunny</b></a> <tg-emoji emoji-id=\"5992524725715209996\">🔴</tg-emoji>\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"👇 নিচে <b>'🚀 Open Dark Booster Panel'</b> বাটনে ক্লিক করে প্যানেল ওপেন করুন:"
     )
@@ -89,14 +113,24 @@ def send_welcome_panel(chat_id, user_first_name):
         "inline_keyboard": [
             [
                 {
-                    "text": "🚀 Open Dark Booster Panel",
-                    "web_app": {"url": WEB_APP_URL}
+                    "text": "Open Dark Booster Panel",
+                    "web_app": {"url": WEB_APP_URL},
+                    "icon_custom_emoji_id": "5312016608254762256",
+                    "style": "primary"
                 }
             ],
             [
                 {
-                    "text": "📢 Official OTP Group",
-                    "url": GROUP_INVITE_URL
+                    "text": "Official OTP Group",
+                    "url": GROUP_INVITE_URL,
+                    "icon_custom_emoji_id": "5859596703379754458",
+                    "style": "success"
+                },
+                {
+                    "text": "Developer (@sunny999)",
+                    "url": "https://t.me/sunny999",
+                    "icon_custom_emoji_id": "5357107601584693888",
+                    "style": "danger"
                 }
             ]
         ]
@@ -105,33 +139,38 @@ def send_welcome_panel(chat_id, user_first_name):
         "chat_id": chat_id,
         "text": text,
         "parse_mode": "HTML",
+        "disable_web_page_preview": True,
         "reply_markup": keyboard
     })
 
 def send_join_group_prompt(chat_id, user_first_name):
     text = (
-        f"⚠️ <b>ACCESS RESTRICTED • ওটিপি গ্রুপে জয়েন আবশ্যক</b> ⚠️\n"
+        f"<tg-emoji emoji-id=\"5379748062124056162\">⚠️</tg-emoji> <b>ACCESS RESTRICTED • ওটিপি গ্রুপে জয়েন আবশ্যক</b> <tg-emoji emoji-id=\"5859596703379754458\">✅</tg-emoji>\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
         f"👋 হ্যালো <b>{user_first_name}</b>,\n"
         f"<b>Dark Booster Number Panel</b> ব্যবহার করতে হলে প্রথমবার আমাদের অফিসিয়াল ওটিপি গ্রুপে যুক্ত হতে হবে!\n\n"
-        f"১️⃣ নিচে <b>'📢 ১. ওটিপি গ্রুপে জয়েন করুন'</b> বাটনে ক্লিক করে জয়েন করুন।\n"
-        f"২️⃣ জয়েন করার পর <b>'✅ ২. ভেরিফাই ও আনলক'</b> বাটনে ক্লিক করুন।\n\n"
+        f"১️⃣ নিচে <b>'১. ওটিপি গ্রুপে জয়েন করুন'</b> বাটনে ক্লিক করে জয়েন করুন।\n"
+        f"২️⃣ জয়েন করার পর <b>'২. ভেরিফাই ও আনলক'</b> বাটনে ক্লিক করুন।\n\n"
         f"<i>(একবার ভেরিফাই করলে পরবর্তীতে আর কখনো ভেরিফাই করা লাগবে না)</i>\n"
         f"━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"👑 <b>Developer:</b> <b>Shariya Sunny</b>"
+        f"<tg-emoji emoji-id=\"5357107601584693888\">👑</tg-emoji> <b>Developer:</b> <a href=\"https://t.me/sunny999\"><b>Shariya Sunny</b></a> <tg-emoji emoji-id=\"5992524725715209996\">🔴</tg-emoji>"
     )
     keyboard = {
         "inline_keyboard": [
             [
                 {
-                    "text": "📢 ১. ওটিপি গ্রুপে জয়েন করুন",
-                    "url": GROUP_INVITE_URL
+                    "text": "১. ওটিপি গ্রুপে জয়েন করুন",
+                    "url": GROUP_INVITE_URL,
+                    "icon_custom_emoji_id": "5859596703379754458",
+                    "style": "primary"
                 }
             ],
             [
                 {
-                    "text": "✅ ২. ভেরিফাই ও আনলক",
-                    "callback_data": "check_membership"
+                    "text": "২. ভেরিফাই ও আনলক",
+                    "callback_data": "check_membership",
+                    "icon_custom_emoji_id": "5857059984025587700",
+                    "style": "success"
                 }
             ]
         ]
@@ -160,6 +199,9 @@ def handle_update(update):
         if not user_id:
             return
 
+        # Save subscriber automatically
+        save_subscriber(user_id, user_name, user.get("username", ""))
+
         # Check if already verified previously
         if is_user_already_saved(user_id):
             send_welcome_panel(chat_id, user_name)
@@ -184,6 +226,9 @@ def handle_update(update):
         chat_id = message.get("chat", {}).get("id")
         msg_id = message.get("message_id")
 
+        if user_id:
+            save_subscriber(user_id, user_name, user.get("username", ""))
+
         if data == "check_membership":
             if is_user_member_of_group(user_id):
                 save_verified_user(user_id)
@@ -194,12 +239,12 @@ def handle_update(update):
                 })
                 # Edit message to welcome with WebApp button
                 text = (
-                    f"⚡ <b>ACCESS GRANTED • DARK BOOSTER PANEL</b> ⚡\n"
+                    f"<tg-emoji emoji-id=\"5312016608254762256\">⚡</tg-emoji> <b>ACCESS GRANTED • DARK BOOSTER PANEL</b> <tg-emoji emoji-id=\"5859596703379754458\">✅</tg-emoji>\n"
                     f"━━━━━━━━━━━━━━━━━━━━━━\n"
-                    f"🎉 অভিনন্দন <b>{user_name}</b>!\n"
+                    f"<tg-emoji emoji-id=\"5310228579009699834\">🎉</tg-emoji> অভিনন্দন <b>{user_name}</b>!\n"
                     f"আপনি সফলভাবে আমাদের ওটিপি গ্রুপে যুক্ত হয়েছেন।\n\n"
                     f"━━━━━━━━━━━━━━━━━━━━━━\n"
-                    f"👑 <b>Developer:</b> <b>Shariya Sunny</b>\n"
+                    f"<tg-emoji emoji-id=\"5357107601584693888\">👑</tg-emoji> <b>Developer:</b> <a href=\"https://t.me/sunny999\"><b>Shariya Sunny</b></a> <tg-emoji emoji-id=\"5992524725715209996\">🔴</tg-emoji>\n"
                     f"━━━━━━━━━━━━━━━━━━━━━━\n"
                     f"👇 নিচে <b>'🚀 Open Dark Booster Panel'</b> বাটনে ক্লিক করে কাজ শুরু করুন:"
                 )
@@ -207,8 +252,18 @@ def handle_update(update):
                     "inline_keyboard": [
                         [
                             {
-                                "text": "🚀 Open Dark Booster Panel",
-                                "web_app": {"url": WEB_APP_URL}
+                                "text": "Open Dark Booster Panel",
+                                "web_app": {"url": WEB_APP_URL},
+                                "icon_custom_emoji_id": "5312016608254762256",
+                                "style": "primary"
+                            }
+                        ],
+                        [
+                            {
+                                "text": "Contact Developer (@sunny999)",
+                                "url": "https://t.me/sunny999",
+                                "icon_custom_emoji_id": "5357107601584693888",
+                                "style": "danger"
                             }
                         ]
                     ]

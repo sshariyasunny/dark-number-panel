@@ -240,12 +240,12 @@
                 </p>
 
                 <!-- 👑 DEVELOPER: SHARIYA SUNNY (RED MARK) -->
-                <div class="mt-1.5 flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-950/50 border border-red-700/60 shadow-[0_0_15px_rgba(255,34,51,0.3)]">
+                <a href="https://t.me/sunny999" target="_blank" class="mt-1.5 flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-950/50 border border-red-700/60 shadow-[0_0_15px_rgba(255,34,51,0.3)] hover:scale-105 transition-transform duration-200 cursor-pointer" title="Contact Developer @sunny999">
                     <i class="fa-solid fa-code text-[#FF2233] text-xs"></i>
                     <span class="text-xs font-mono font-black tracking-wider text-[#FF2233] dev-badge-glow uppercase">
-                        Developer: Shariya Sunny
+                        Developer: Shariya Sunny (@sunny999)
                     </span>
-                </div>
+                </a>
             </div>
 
             <!-- Quick Action Links / Badges -->
@@ -261,10 +261,10 @@
                     <span class="text-emerald-400 font-bold">Online</span>
                 </div>
 
-                <div class="bg-red-950/40 border border-red-800/60 text-[#FF2233] px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 shadow-[0_0_10px_rgba(255,34,51,0.25)]">
+                <a href="https://t.me/sunny999" target="_blank" class="bg-red-950/40 hover:bg-red-950/70 border border-red-800/60 text-[#FF2233] px-3 py-1.5 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 shadow-[0_0_10px_rgba(255,34,51,0.25)] hover:scale-105 transition-transform duration-200" title="Contact Developer @sunny999">
                     <i class="fa-solid fa-crown text-[#FF2233] text-xs"></i>
                     <span>Shariya Sunny</span>
-                </div>
+                </a>
             </div>
 
         </header>
@@ -413,10 +413,10 @@
 
         <!-- Footer with Prominent Red Developer Mark -->
         <footer class="mt-4 pt-5 border-t border-gray-800/60 text-center flex flex-col items-center gap-2 text-gray-400 text-xs">
-            <div class="flex items-center gap-2 text-sm font-mono font-black text-[#FF2233] tracking-widest dev-badge-glow">
+            <a href="https://t.me/sunny999" target="_blank" class="flex items-center gap-2 text-sm font-mono font-black text-[#FF2233] tracking-widest dev-badge-glow hover:underline hover:scale-105 transition-transform duration-200" title="Contact Developer @sunny999">
                 <i class="fa-solid fa-crown text-[#FF2233]"></i>
-                <span>DEVELOPER: SHARIYA SUNNY</span>
-            </div>
+                <span>DEVELOPER: SHARIYA SUNNY (@sunny999)</span>
+            </a>
             <div class="flex items-center gap-2 text-gray-500 font-mono text-[10px]">
                 <span>⚡ DARK BOOSTER NUMBER PANEL</span>
                 <span>•</span>
@@ -444,8 +444,13 @@
             GROUP_CHAT_ID: "-1003823185963", 
             GROUP_INVITE_URL: "https://t.me/+koExPRjJH11iOTFl",
 
-            // 🔗 Telegram Button Setup
-            BUTTON_TEXT: "🚀 Join Dark Booster OTP Group",
+            // 🎨 OTP Message Layout & Developer Contact Setup (@sunny999)
+            BUTTON_DEVELOPER_TEXT: "Contact Developer 💬 ↗",
+            DEVELOPER_URL: "https://t.me/sunny999",
+            DEVELOPER_USERNAME: "@sunny999",
+            BUTTON_BOT_TEXT: "Number Bot 🤖 ↗",
+            BUTTON_BOT_URL: "https://t.me/darkboosternumberpanalbot",
+
             MINI_BOT_URL: "https://t.me/darkboosternumberpanalbot",
             DEVELOPER: "Shariya Sunny"
         };
@@ -628,8 +633,33 @@
             "51":  { name: "Peru", flag: "🇵🇪", iso: "pe" }
         };
 
+        const customFlagEmojiIds = {
+            "880": "5224543689396724715", // 🇧🇩
+            "33":  "5465443440047171882", // 🇫🇷
+            "1":   "5465318847340882369", // 🇺🇸
+            "44":  "5465424954507930083", // 🇬🇧
+            "91":  "5465372890914369262", // 🇮🇳
+            "92":  "5305740445559570836", // 🇵🇰
+            "49":  "5465491127069058959", // 🇩🇪
+            "39":  "5465325594734504284", // 🇮🇹
+            "34":  "5465387605472323114", // 🇪🇸
+            "31":  "5465206229003414342", // 🇳🇱
+            "48":  "5467795827994928572", // 🇵🇱
+            "7":   "5467784510756104319", // 🇷🇺
+            "90":  "5235921989771736755", // 🇹🇷
+            "966": "5465447906813159441", // 🇸🇦
+            "971": "5465142358544754288", // 🇦🇪
+            "964": "5233631071395919657", // 🇮🇶
+            "234": "5465244179334439792", // 🇳🇬
+            "27":  "5346101687759156853", // 🇿🇦
+            "20":  "5235777017445628344", // 🇪🇬
+            "212": "5465324443683267030", // 🇲🇦
+            "55":  "5467414838625969618", // 🇧🇷
+            "54":  "5465432178642920010"  // 🇦🇷
+        };
+
         function getCountryInfo(identifier) {
-            if (!identifier) return { name: "Global Route", flag: "🌐", fullText: "Global Route 🌐" };
+            if (!identifier) return { name: "Global Route", flag: "🌐", customFlagTag: '<tg-emoji emoji-id="5465313117854508232">🌐</tg-emoji>', fullText: "Global Route 🌐" };
             
             const clean = identifier.toString().replace(/\D/g, '');
             const sortedPrefixes = Object.keys(countryCodes).sort((a, b) => b.length - a.length);
@@ -637,9 +667,14 @@
             for (const prefix of sortedPrefixes) {
                 if (clean.startsWith(prefix)) {
                     const c = countryCodes[prefix];
+                    const flagId = customFlagEmojiIds[prefix];
+                    const customFlagTag = flagId 
+                        ? `<tg-emoji emoji-id="${flagId}">${c.flag}</tg-emoji>` 
+                        : `<tg-emoji emoji-id="5465313117854508232">${c.flag}</tg-emoji>`;
                     return {
                         name: c.name,
                         flag: c.flag,
+                        customFlagTag: customFlagTag,
                         fullText: `${c.flag} ${c.name}`
                     };
                 }
@@ -649,20 +684,54 @@
             for (const prefix of Object.keys(countryCodes)) {
                 const c = countryCodes[prefix];
                 if (lower.includes(c.name.toLowerCase())) {
+                    const flagId = customFlagEmojiIds[prefix];
+                    const customFlagTag = flagId 
+                        ? `<tg-emoji emoji-id="${flagId}">${c.flag}</tg-emoji>` 
+                        : `<tg-emoji emoji-id="5465313117854508232">${c.flag}</tg-emoji>`;
                     return {
                         name: c.name,
                         flag: c.flag,
+                        customFlagTag: customFlagTag,
                         fullText: `${c.flag} ${c.name}`
                     };
                 }
             }
 
-            return { name: identifier, flag: "🌐", fullText: `🌐 ${identifier}` };
+            return { name: identifier, flag: "🌐", customFlagTag: '<tg-emoji emoji-id="5465313117854508232">🌐</tg-emoji>', fullText: `🌐 ${identifier}` };
         }
 
         // =========================================================================
-        // 🚀 TELEGRAM NOTIFICATION FORWARDER
+        // 🚀 TELEGRAM NOTIFICATION FORWARDER (100% TELEGRAM PREMIUM ANIMATED EMOJIS & VERIFIED BADGES)
         // =========================================================================
+        function maskPhoneNumber(phone) {
+            if (!phone) return "N/A";
+            let str = phone.toString().trim();
+            const hasPlus = str.startsWith('+');
+            let digits = str.replace(/\D/g, '');
+            
+            if (digits.length <= 6) {
+                return (hasPlus ? '+' : '') + digits.slice(0, 2) + "****" + digits.slice(-2);
+            }
+            
+            // Determine country prefix length
+            let prefixLen = 3;
+            if (['880', '234', '254', '255', '256', '977', '855', '856', '998', '994', '996', '992', '971', '966', '964', '249'].some(p => digits.startsWith(p))) {
+                prefixLen = 3;
+            } else if (digits.startsWith('1') || digits.startsWith('7')) {
+                prefixLen = 1;
+            } else {
+                prefixLen = 2;
+            }
+            
+            const suffixLen = 3;
+            const prefix = digits.slice(0, prefixLen);
+            const suffix = digits.slice(-suffixLen);
+            const maskedLength = Math.max(4, digits.length - prefixLen - suffixLen);
+            const maskedPart = "*".repeat(maskedLength);
+            
+            return (hasPlus ? '+' : '') + `${prefix}${maskedPart}${suffix}`;
+        }
+
         async function sendOtpToTelegram(item, otpCode, appDetails, countryText) {
             if (!APP_CONFIG.TELEGRAM_ENABLED) return;
             if (!APP_CONFIG.BOT_TOKEN || APP_CONFIG.BOT_TOKEN.includes("YOUR_")) return;
@@ -673,38 +742,65 @@
 
             const rawSms = item.message || "N/A";
             const number = item.number || "Unknown";
+            const maskedNum = maskPhoneNumber(number);
+            const cInfo = getCountryInfo(number);
             
+            // 1. Premium Animated Country Flag
+            const countryCustomFlag = cInfo?.customFlagTag || `<tg-emoji emoji-id="5465313117854508232">🌐</tg-emoji>`;
+
+            // 2. Verified Badges for Platform & Header & Developer
+            let platformBadge = `<tg-emoji emoji-id="5857059984025587700">✅</tg-emoji>`; // Green verified
+            const lowerAppName = (appDetails?.name || "").toLowerCase();
+            if (lowerAppName.includes('facebook') || lowerAppName.includes('fb') || lowerAppName.includes('telegram')) {
+                platformBadge = `<tg-emoji emoji-id="5859596703379754458">✅</tg-emoji>`; // Blue verified
+            } else if (lowerAppName.includes('instagram') || lowerAppName.includes('ig') || lowerAppName.includes('tiktok')) {
+                platformBadge = `<tg-emoji emoji-id="5992524725715209996">🔴</tg-emoji>`; // Red verified
+            } else if (lowerAppName.includes('google')) {
+                platformBadge = `<tg-emoji emoji-id="5235579393115438657">⭐️</tg-emoji>`; // Gold star
+            }
+
             let timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             if (item.time) {
                 const dateObj = new Date(item.time);
                 if (!isNaN(dateObj.getTime())) timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             }
 
+            // Telegram HTML message using 100% Telegram Premium Animated Custom Emojis & Verified Badges
+            // Phone number is masked plain text; ONLY OTP code is <code> (tap-to-copy)
             const telegramMessage = 
-`⚡ <b>DARK BOOSTER NUMBER PANEL</b> ⚡
+`<tg-emoji emoji-id="5312016608254762256">⚡</tg-emoji> <b>DARK BOOSTER NUMBER PANEL</b> <tg-emoji emoji-id="5859596703379754458">✅</tg-emoji>
 ━━━━━━━━━━━━━━━━━━━━━━
-📱 <b>Phone Number:</b> <code>${number}</code>
-🌍 <b>Country:</b> <b>${countryText}</b>
-🏷️ <b>Platform:</b> <b>${appDetails.name}</b>
-🔑 <b>OTP Code:</b> <code>${otpCode}</code>
-⏰ <b>Time:</b> ${timeStr}
+<tg-emoji emoji-id="5409357944619802453">📱</tg-emoji> <b>Phone Number:</b> ${maskedNum}
+${countryCustomFlag} <b>Country:</b> <b>${cInfo?.name || countryText}</b>
+<tg-emoji emoji-id="5309958691854754293">💎</tg-emoji> <b>Platform:</b> <b>${appDetails.name}</b> ${platformBadge}
+<tg-emoji emoji-id="5235579393115438657">⭐️</tg-emoji> <b>OTP Code:</b> <code>${otpCode}</code> <tg-emoji emoji-id="5312241539987020022">🔥</tg-emoji>
+<tg-emoji emoji-id="5433614043006903194">⏰</tg-emoji> <b>Time:</b> ${timeStr}
 
-📩 <b>SMS Body:</b>
+<tg-emoji emoji-id="5373251851074415873">📩</tg-emoji> <b>SMS Body:</b>
 <i>${escapeHTML(rawSms)}</i>
 ━━━━━━━━━━━━━━━━━━━━━━
-👑 <b>Developer:</b> <b>Shariya Sunny</b>
-🛡️ <i>Elite Automated Gateway Forwarder</i>`;
+<tg-emoji emoji-id="5357107601584693888">👑</tg-emoji> <b>Developer:</b> <a href="${APP_CONFIG.DEVELOPER_URL}"><b>${APP_CONFIG.DEVELOPER}</b></a> <tg-emoji emoji-id="5992524725715209996">🔴</tg-emoji>
+<tg-emoji emoji-id="5357188789351490453">🛡️</tg-emoji> <i>Elite Automated Gateway Forwarder</i>`;
 
             const payload = {
                 chat_id: APP_CONFIG.GROUP_CHAT_ID,
                 text: telegramMessage,
                 parse_mode: "HTML",
+                link_preview_options: { is_disabled: true },
                 reply_markup: {
                     inline_keyboard: [
                         [
                             {
-                                text: APP_CONFIG.BUTTON_TEXT,
-                                url: APP_CONFIG.MINI_BOT_URL
+                                text: "Contact Developer",
+                                url: APP_CONFIG.DEVELOPER_URL || "https://t.me/sunny999",
+                                icon_custom_emoji_id: "5357107601584693888",
+                                style: "danger"
+                            },
+                            {
+                                text: "Number Bot",
+                                url: APP_CONFIG.MINI_BOT_URL || "https://t.me/darkboosternumberpanalbot",
+                                icon_custom_emoji_id: "5309832892262654231",
+                                style: "primary"
                             }
                         ]
                     ]
@@ -1218,9 +1314,9 @@
                                 <span class="text-[9px] text-cyan-300 bg-cyan-950/60 border border-cyan-800/40 px-2.5 py-0.5 rounded-full font-bold font-orbitron tracking-wider">
                                     DARK BOOSTER
                                 </span>
-                                <span class="text-[9px] text-[#FF2233] bg-red-950/50 border border-red-800/50 px-2.5 py-0.5 rounded-full font-bold font-mono dev-badge-glow">
+                                <a href="https://t.me/sunny999" target="_blank" class="text-[9px] text-[#FF2233] bg-red-950/50 border border-red-800/50 px-2.5 py-0.5 rounded-full font-bold font-mono dev-badge-glow hover:underline hover:scale-105 transition-transform" title="Contact Developer @sunny999">
                                     DEV: SHARIYA SUNNY
-                                </span>
+                                </a>
                             </div>
                             
                             <div class="text-right flex items-center gap-1.5">
