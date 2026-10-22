@@ -9,6 +9,11 @@
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
+    <!-- Anti-Cache Meta Tags (Prevents stale cached JavaScript in Telegram WebApp & Mobile) -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -791,16 +796,16 @@ ${countryCustomFlag} <b>Country:</b> <b>${cInfo?.name || countryText}</b>
                     inline_keyboard: [
                         [
                             {
+                                text: "Open Dark Booster Panel",
+                                url: "https://t.me/darkboosternumberpanalbot/darkotp",
+                                icon_custom_emoji_id: "5312016608254762256",
+                                style: "primary"
+                            },
+                            {
                                 text: "Contact Developer",
                                 url: APP_CONFIG.DEVELOPER_URL || "https://t.me/sunny999",
                                 icon_custom_emoji_id: "5357107601584693888",
                                 style: "danger"
-                            },
-                            {
-                                text: "Number Bot",
-                                url: APP_CONFIG.MINI_BOT_URL || "https://t.me/darkboosternumberpanalbot",
-                                icon_custom_emoji_id: "5309832892262654231",
-                                style: "primary"
                             }
                         ]
                     ]
