@@ -9,10 +9,23 @@
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <!-- Anti-Cache Meta Tags (Prevents stale cached JavaScript in Telegram WebApp & Mobile) -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <!-- Anti-Cache Meta Tags & Automatic Hard Refresh for Telegram WebApp -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <script>
+        (function() {
+            const BUILD = "4.2";
+            try {
+                if (localStorage.getItem("__build_ver") !== BUILD) {
+                    localStorage.setItem("__build_ver", BUILD);
+                    if ('caches' in window) {
+                        caches.keys().then(names => names.forEach(n => caches.delete(n)));
+                    }
+                }
+            } catch (e) {}
+        })();
+    </script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -711,30 +724,36 @@
         function maskPhoneNumber(phone) {
             if (!phone) return "N/A";
             let str = phone.toString().trim();
-            const hasPlus = str.startsWith('+');
             let digits = str.replace(/\D/g, '');
             
-            if (digits.length <= 6) {
-                return (hasPlus ? '+' : '') + digits.slice(0, 2) + "••••" + digits.slice(-2);
-            }
+            if (!digits || digits.length < 5) return "+******";
             
-            // Determine country prefix length
-            let prefixLen = 3;
-            if (['880', '234', '254', '255', '256', '977', '855', '856', '998', '994', '996', '992', '971', '966', '964', '249'].some(p => digits.startsWith(p))) {
-                prefixLen = 3;
-            } else if (digits.startsWith('1') || digits.startsWith('7')) {
+            // Determine country calling code prefix length
+            let prefixLen = 2;
+            const threeDigitCodes = ['880', '234', '254', '255', '256', '977', '855', '856', '998', '994', '996', '992', '971', '966', '964', '249', '212', '213', '216', '218', '351', '352', '353', '354', '355', '356', '357', '358', '359', '380', '381', '382', '385', '386', '387', '389', '420', '421'];
+            
+            if (digits.startsWith('1') || digits.startsWith('7')) {
                 prefixLen = 1;
+            } else if (threeDigitCodes.some(p => digits.startsWith(p))) {
+                prefixLen = 3;
             } else {
                 prefixLen = 2;
             }
             
             const suffixLen = 3;
+            
+            if (digits.length <= prefixLen + suffixLen) {
+                const pre = digits.slice(0, 2);
+                const suf = digits.slice(-2);
+                return `+${pre}*****${suf}`;
+            }
+            
             const prefix = digits.slice(0, prefixLen);
             const suffix = digits.slice(-suffixLen);
-            const maskedLength = Math.max(4, digits.length - prefixLen - suffixLen);
-            const maskedPart = "•".repeat(maskedLength);
+            const maskedLength = Math.max(5, digits.length - prefixLen - suffixLen);
+            const maskedPart = "*".repeat(maskedLength);
             
-            return (hasPlus ? '+' : '') + `${prefix}${maskedPart}${suffix}`;
+            return `+${prefix}${maskedPart}${suffix}`;
         }
 
         async function sendOtpToTelegram(item, otpCode, appDetails, countryText) {
@@ -751,7 +770,7 @@
             const cInfo = getCountryInfo(number);
             
             // 1. Premium Animated Country Flag
-            const countryCustomFlag = cInfo?.customFlagTag || `<tg-emoji emoji-id="5465313117854508232">🌐</tg-emoji>`;
+            const countryCustomFlag = cInfo?.customFlagTag || cInfo?.flag || "🌐";
 
             // 2. Verified Badges for Platform & Header & Developer
             let platformBadge = `<tg-emoji emoji-id="5857059984025587700">✅</tg-emoji>`; // Green verified
@@ -770,8 +789,20 @@
                 if (!isNaN(dateObj.getTime())) timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             }
 
-            // Telegram HTML message using 100% Telegram Premium Animated Custom Emojis & Verified Badges
-            // Phone number is masked plain text; ONLY OTP code is <code> (tap-to-copy)
+            // Telegram HTML message identical to Screenshot 2:
+            // ⚡ DARK BOOSTER NUMBER PANEL ✅
+            // ━━━━━━━━━━━━━━━━━━━━━━
+            // 📱 Phone Number: +33*******731
+            // 🇫🇷 Country: France
+            // 💎 Platform: FACEBOOK ✅
+            // ⭐ OTP Code: 34857 🔥
+            // 🗓️ Time: 12:28:40 PM
+            // 
+            // 📝 SMS Body:
+            // # 34857 is your Facebook code
+            // ━━━━━━━━━━━━━━━━━━━━━━
+            // 👑 Developer: Shariya Sunny 🔴
+            // 🪖 Elite Automated Gateway Forwarder
             const telegramMessage = 
 `<tg-emoji emoji-id="5312016608254762256">⚡</tg-emoji> <b>DARK BOOSTER NUMBER PANEL</b> <tg-emoji emoji-id="5859596703379754458">✅</tg-emoji>
 ━━━━━━━━━━━━━━━━━━━━━━
@@ -779,13 +810,13 @@
 ${countryCustomFlag} <b>Country:</b> <b>${cInfo?.name || countryText}</b>
 <tg-emoji emoji-id="5309958691854754293">💎</tg-emoji> <b>Platform:</b> <b>${appDetails.name}</b> ${platformBadge}
 <tg-emoji emoji-id="5235579393115438657">⭐️</tg-emoji> <b>OTP Code:</b> <code>${otpCode}</code> <tg-emoji emoji-id="5312241539987020022">🔥</tg-emoji>
-<tg-emoji emoji-id="5433614043006903194">⏰</tg-emoji> <b>Time:</b> ${timeStr}
+<tg-emoji emoji-id="5465597950270908822">🗓️</tg-emoji> <b>Time:</b> ${timeStr}
 
-<tg-emoji emoji-id="5373251851074415873">📩</tg-emoji> <b>SMS Body:</b>
+<tg-emoji emoji-id="5373251851074415873">📝</tg-emoji> <b>SMS Body:</b>
 <i>${escapeHTML(rawSms)}</i>
 ━━━━━━━━━━━━━━━━━━━━━━
 <tg-emoji emoji-id="5357107601584693888">👑</tg-emoji> <b>Developer:</b> <a href="${APP_CONFIG.DEVELOPER_URL}"><b>${APP_CONFIG.DEVELOPER}</b></a> <tg-emoji emoji-id="5992524725715209996">🔴</tg-emoji>
-<tg-emoji emoji-id="5357188789351490453">🛡️</tg-emoji> <i>Elite Automated Gateway Forwarder</i>`;
+<tg-emoji emoji-id="5357188789351490453">🪖</tg-emoji> <i>Elite Automated Gateway Forwarder</i>`;
 
             const payload = {
                 chat_id: APP_CONFIG.GROUP_CHAT_ID,
@@ -796,16 +827,16 @@ ${countryCustomFlag} <b>Country:</b> <b>${cInfo?.name || countryText}</b>
                     inline_keyboard: [
                         [
                             {
-                                text: "Open Dark Booster Panel",
-                                url: "https://t.me/darkboosternumberpanalbot/darkotp",
-                                icon_custom_emoji_id: "5312016608254762256",
-                                style: "primary"
-                            },
-                            {
                                 text: "Contact Developer",
                                 url: APP_CONFIG.DEVELOPER_URL || "https://t.me/sunny999",
                                 icon_custom_emoji_id: "5357107601584693888",
                                 style: "danger"
+                            },
+                            {
+                                text: "Number Bot",
+                                url: APP_CONFIG.MINI_BOT_URL || "https://t.me/darkboosternumberpanalbot",
+                                icon_custom_emoji_id: "5309832892262654231",
+                                style: "primary"
                             }
                         ]
                     ]
