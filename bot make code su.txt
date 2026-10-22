@@ -688,7 +688,7 @@
                     const flagId = customFlagEmojiIds[prefix];
                     const customFlagTag = flagId 
                         ? `<tg-emoji emoji-id="${flagId}">${c.flag}</tg-emoji>` 
-                        : `<tg-emoji emoji-id="5465313117854508232">${c.flag}</tg-emoji>`;
+                        : c.flag;
                     return {
                         name: c.name,
                         flag: c.flag,
@@ -705,7 +705,7 @@
                     const flagId = customFlagEmojiIds[prefix];
                     const customFlagTag = flagId 
                         ? `<tg-emoji emoji-id="${flagId}">${c.flag}</tg-emoji>` 
-                        : `<tg-emoji emoji-id="5465313117854508232">${c.flag}</tg-emoji>`;
+                        : c.flag;
                     return {
                         name: c.name,
                         flag: c.flag,
