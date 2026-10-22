@@ -715,7 +715,7 @@
             let digits = str.replace(/\D/g, '');
             
             if (digits.length <= 6) {
-                return (hasPlus ? '+' : '') + digits.slice(0, 2) + "****" + digits.slice(-2);
+                return (hasPlus ? '+' : '') + digits.slice(0, 2) + "••••" + digits.slice(-2);
             }
             
             // Determine country prefix length
@@ -732,7 +732,7 @@
             const prefix = digits.slice(0, prefixLen);
             const suffix = digits.slice(-suffixLen);
             const maskedLength = Math.max(4, digits.length - prefixLen - suffixLen);
-            const maskedPart = "*".repeat(maskedLength);
+            const maskedPart = "•".repeat(maskedLength);
             
             return (hasPlus ? '+' : '') + `${prefix}${maskedPart}${suffix}`;
         }
