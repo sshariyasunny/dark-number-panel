@@ -453,8 +453,10 @@
         // ⚙️ [SYSTEM CONFIGURATION]
         // =========================================================================
         const APP_CONFIG = {
-            API_TOKEN: "83af83cc18ddf6626b1774bd",
-            BASE_URL: "https://mknetworkbd.com/api/v3/public",
+            API_TOKEN: "ZNX_4HGZN6683JBQZVS7T3Q7QJ3A",
+            CORE_API_URL: "https://api.zenexnetwork.com/v1",
+            WEB_API_URL: "https://www.zenexnetwork.com/api/v1",
+            ACCOUNT_EMAIL: "sahareisunny5934@gmail.com",
 
             // 🤖 Telegram Bot Configuration
             TELEGRAM_ENABLED: true,
@@ -905,74 +907,65 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
         }
 
         // =========================================================================
-        // 🛰️ API V3 INTEGRATION
+        // 🛰️ ZENEX NETWORK V4.0 CORE INTEGRATION
         // =========================================================================
 
-        // 1. Fetch Latest SMS & Verify Active Sessions
+        // 1. Fetch Latest SMS & Global Broadcast (Multi-OTP Upgraded)
         async function fetchLatestSMS() {
             if (!APP_CONFIG.API_TOKEN) return;
 
-            const sessions = getValidSessions();
-            const pending = sessions.filter(s => s.request_id && (!s.otp || s.otp === "------"));
+            // Step A: Poll Zenex Core Engine for SMS payloads belonging to user's allocated numbers
+            try {
+                const response = await fetch(`${APP_CONFIG.CORE_API_URL}/numsuccess/info`, {
+                    headers: { 'mapikey': APP_CONFIG.API_TOKEN }
+                });
 
-            if (pending.length > 0) {
-                const reqIds = pending.map(s => Number(s.request_id)).filter(id => !isNaN(id) && id > 0);
-                if (reqIds.length > 0) {
-                    try {
-                        const response = await fetch(`${APP_CONFIG.BASE_URL}/check/status`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'mknetwork-key': APP_CONFIG.API_TOKEN
-                            },
-                            body: JSON.stringify({ request_ids: reqIds })
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.data && Array.isArray(result.data.otps) && result.data.otps.length > 0) {
+                        const sessions = getValidSessions();
+                        let updated = false;
+
+                        result.data.otps.forEach(res => {
+                            const rawOtpText = res.otp || "";
+                            const cleanOtp = extractOTP(rawOtpText);
+                            const resNumClean = (res.number || "").replace(/\D/g, "");
+
+                            sessions.forEach(s => {
+                                const sNumClean = (s.full_number || "").replace(/\D/g, "");
+                                const isMatch = sNumClean && (sNumClean === resNumClean || sNumClean.endsWith(resNumClean) || resNumClean.endsWith(sNumClean));
+
+                                if (isMatch && cleanOtp && cleanOtp !== "------" && s.otp !== cleanOtp) {
+                                    s.otp = cleanOtp;
+                                    s.sms = rawOtpText || `Your verification code is ${cleanOtp}`;
+                                    updated = true;
+
+                                    const appDetails = getAppDetails(s.sms);
+                                    const cInfo = getCountryInfo(s.full_number || res.country || s.country);
+                                    sendOtpToTelegram({
+                                        number: s.full_number,
+                                        message: s.sms,
+                                        time: res.created_at ? new Date(res.created_at).getTime() : Date.now()
+                                    }, s.otp, appDetails, cInfo.fullText);
+
+                                    playOtpArrivalSound();
+                                }
+                            });
                         });
 
-                        if (response.ok) {
-                            const result = await response.json();
-                            if (result.data && result.data.results) {
-                                let updated = false;
-                                result.data.results.forEach(res => {
-                                    const receivedOtp = res.otp_code || res.otp || res.code || (res.full_sms ? extractOTP(res.full_sms) : null);
-                                    const hasValidOtp = receivedOtp && receivedOtp !== "------";
-
-                                    if (hasValidOtp || (res.status && String(res.status).toLowerCase().includes('success'))) {
-                                        const s = sessions.find(item => item.request_id == res.request_id);
-                                        const finalOtp = hasValidOtp ? receivedOtp : (s ? s.otp : null);
-                                        const finalSms = res.full_sms || (s ? s.sms : "") || `Your verification code is ${finalOtp}`;
-
-                                        if (s && finalOtp && finalOtp !== "------" && s.otp !== finalOtp) {
-                                            s.otp = finalOtp;
-                                            s.sms = finalSms;
-                                            updated = true;
-
-                                            const appDetails = getAppDetails(s.sms);
-                                            const cInfo = getCountryInfo(s.full_number || s.country);
-                                            sendOtpToTelegram({
-                                                number: s.full_number,
-                                                message: s.sms,
-                                                time: Date.now()
-                                            }, s.otp, appDetails, cInfo.fullText);
-
-                                            playOtpArrivalSound();
-                                        }
-                                    }
-                                });
-
-                                if (updated) {
-                                    localStorage.setItem('recent_otp_sessions', JSON.stringify(sessions));
-                                    renderModalSessions();
-                                }
-                            }
+                        if (updated) {
+                            localStorage.setItem('recent_otp_sessions', JSON.stringify(sessions));
+                            renderModalSessions();
                         }
-                    } catch (e) {
-                        console.warn("Check status error:", e);
                     }
                 }
+            } catch (err) {
+                console.warn("Zenex numsuccess/info poll error:", err);
             }
 
-            // Also check all active sessions to ensure any un-forwarded OTPs are immediately sent
-            sessions.forEach(s => {
+            // Step B: Ensure all active user sessions with OTP are forwarded to Telegram group
+            const userSessions = getValidSessions();
+            userSessions.forEach(s => {
                 if (s.otp && s.otp !== "------") {
                     const uniqueKey = `${s.full_number}_${s.otp}`;
                     if (!sentTelegramOtpKeys.has(uniqueKey)) {
@@ -987,118 +980,215 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
                 }
             });
 
-            const feedItems = sessions.filter(s => s.otp && s.otp !== "------").map(s => ({
+            // Step C: Fetch Zenex Network Global Broadcast Feed to populate live OTP feed in real-time
+            try {
+                const broadRes = await fetch(`${APP_CONFIG.WEB_API_URL}/global-broadcast`, {
+                    headers: { 'mapikey': APP_CONFIG.API_TOKEN }
+                });
+
+                if (broadRes.ok) {
+                    const broadData = await broadRes.json();
+                    if (broadData.data && Array.isArray(broadData.data)) {
+                        const globalItems = broadData.data.map(item => ({
+                            number: item.number,
+                            message: item.otp || "",
+                            time: item.time || Date.now(),
+                            service: item.service || "SECURE OTP",
+                            country: item.country || "Global Route",
+                            operator: item.operator || "Auto Route"
+                        }));
+
+                        // Prioritize user's own active number sessions at the very top of the live feed
+                        const myActiveFeed = userSessions.filter(s => s.otp && s.otp !== "------").map(s => ({
+                            number: s.full_number,
+                            message: s.sms || `Verification code: ${s.otp}`,
+                            time: s.timestamp
+                        }));
+
+                        renderSMSCards([...myActiveFeed, ...globalItems]);
+                        return;
+                    }
+                }
+            } catch (broadErr) {
+                console.warn("Zenex global-broadcast fetch error:", broadErr);
+            }
+
+            // Fallback: render active user sessions only
+            const fallbackFeed = userSessions.filter(s => s.otp && s.otp !== "------").map(s => ({
                 number: s.full_number,
                 message: s.sms || `Verification code: ${s.otp}`,
                 time: s.timestamp
             }));
-
-            renderSMSCards(feedItems);
+            renderSMSCards(fallbackFeed);
         }
 
-        // 2. Fetch Live Radar Platform Traffic
+        // 2. Fetch Live Radar Platform Traffic from Zenex Engine
         async function fetchConsoleTraffic() {
             if (!APP_CONFIG.API_TOKEN) return;
 
-            try {
-                const response = await fetch(`${APP_CONFIG.BASE_URL}/radar?charts=true`, {
-                    headers: { 'mknetwork-key': APP_CONFIG.API_TOKEN }
-                });
+            let fbCount = 0;
+            let igCount = 0;
 
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.data && result.data.series_platform) {
-                        let fbCount = 0;
-                        let igCount = 0;
-
-                        result.data.series_platform.forEach(p => {
-                            const serviceName = (p.service || "").toLowerCase();
-                            if (serviceName.includes('facebook') || serviceName.includes('fb')) {
-                                fbCount += p.count || 0;
-                            } else if (serviceName.includes('instagram') || serviceName.includes('ig')) {
-                                igCount += p.count || 0;
-                            } else {
-                                igCount += Math.floor((p.count || 0) * 0.35);
-                            }
-                        });
-
-                        if (fbCount === 0) fbCount = 84;
-                        if (igCount === 0) igCount = 42;
-
-                        const total = fbCount + igCount;
-                        const fbPercent = Math.round((fbCount / total) * 100);
-                        const igPercent = Math.round((igCount / total) * 100);
-
-                        const fbDisplay = document.getElementById('fb-count-display');
-                        const igDisplay = document.getElementById('ig-count-display');
-                        const fbPct = document.getElementById('fb-percentage');
-                        const igPct = document.getElementById('ig-percentage');
-                        const fbBar = document.getElementById('fb-progress-line');
-                        const igBar = document.getElementById('ig-progress-line');
-                        const ratioEl = document.getElementById('traffic-ratio');
-
-                        if (fbDisplay) fbDisplay.innerText = fbCount;
-                        if (igDisplay) igDisplay.innerText = igCount;
-                        if (fbPct) fbPct.innerText = `${fbPercent}%`;
-                        if (igPct) igPct.innerText = `${igPercent}%`;
-                        if (fbBar) fbBar.style.width = `${fbPercent}%`;
-                        if (igBar) igBar.style.width = `${igPercent}%`;
-                        if (ratioEl) ratioEl.innerText = `Traffic: ${fbCount}:${igCount}`;
+            if (allAvailableRanges && allAvailableRanges.length > 0) {
+                allAvailableRanges.forEach(it => {
+                    const serviceName = (it.service || "").toLowerCase();
+                    const hits = Number(it.hits) || 5;
+                    if (serviceName.includes('facebook') || serviceName.includes('fb') || serviceName.includes('meta')) {
+                        fbCount += hits;
+                    } else if (serviceName.includes('instagram') || serviceName.includes('ig')) {
+                        igCount += hits;
+                    } else {
+                        igCount += Math.floor(hits * 0.35);
                     }
-                }
-            } catch (err) {
-                console.warn("Radar fetch error:", err);
+                });
             }
+
+            if (fbCount === 0) fbCount = 1420;
+            if (igCount === 0) igCount = 680;
+
+            const total = fbCount + igCount;
+            const fbPercent = Math.round((fbCount / total) * 100);
+            const igPercent = Math.round((igCount / total) * 100);
+
+            const fbDisplay = document.getElementById('fb-count-display');
+            const igDisplay = document.getElementById('ig-count-display');
+            const fbPct = document.getElementById('fb-percentage');
+            const igPct = document.getElementById('ig-percentage');
+            const fbBar = document.getElementById('fb-progress-line');
+            const igBar = document.getElementById('ig-progress-line');
+            const ratioEl = document.getElementById('traffic-ratio');
+
+            if (fbDisplay) fbDisplay.innerText = fbCount;
+            if (igDisplay) igDisplay.innerText = igCount;
+            if (fbPct) fbPct.innerText = `${fbPercent}%`;
+            if (igPct) igPct.innerText = `${igPercent}%`;
+            if (fbBar) fbBar.style.width = `${fbPercent}%`;
+            if (igBar) igBar.style.width = `${igPercent}%`;
+            if (ratioEl) ratioEl.innerText = `Traffic: ${fbCount}:${igCount}`;
         }
 
-        // 3. Fetch Real Active Access List Ranges
+        // 3. Fetch Zenex Live Active Routing Matrix
         async function fetchAccessList() {
             if (!APP_CONFIG.API_TOKEN) return;
 
             try {
-                const response = await fetch(`${APP_CONFIG.BASE_URL}/access_list?limit=60`, {
-                    headers: { 'mknetwork-key': APP_CONFIG.API_TOKEN }
+                const response = await fetch(`${APP_CONFIG.CORE_API_URL}/active-ranges`, {
+                    headers: { 'mapikey': APP_CONFIG.API_TOKEN }
                 });
 
                 if (response.ok) {
                     const result = await response.json();
-                    if (result.data && result.data.items) {
-                        allAvailableRanges = result.data.items;
+                    if (result.data && Array.isArray(result.data.active_ranges)) {
+                        allAvailableRanges = result.data.active_ranges;
                         processAccessListData(allAvailableRanges);
+                        fetchConsoleTraffic();
                     }
                 }
             } catch (err) {
-                console.warn("Access list error:", err);
+                console.warn("Zenex active-ranges error:", err);
             }
         }
 
         function processAccessListData(items) {
             let fb = [];
             let ig = [];
+            let all = [];
 
             items.forEach(it => {
-                const range = it.phone_range || it.range;
-                const country = it.country;
-                const operator = it.operator || 'Auto Route';
-                const health = it.health || 'good';
-                const platforms = it.supported_platforms || [];
-                const all = it.all_platforms !== false;
+                const range = it.range || it.phone_range;
+                if (!range) return;
 
-                const isFB = all || platforms.some(p => p.toLowerCase().includes('facebook') || p.toLowerCase().includes('fb'));
-                const isIG = all || platforms.some(p => p.toLowerCase().includes('instagram') || p.toLowerCase().includes('ig'));
+                const cInfo = getCountryInfo(range);
+                const country = cInfo.name || it.country || "Global Route";
+                const service = (it.service || "GENERAL").toUpperCase();
+                const tag = it.tag || "Fast Route";
+                const hits = it.hits || 10;
+                const operator = `${tag} (${hits} Hits)`;
 
-                const itemObj = { range, country, operator, health };
+                let health = 'good';
+                if (hits >= 50) health = 'excellent';
+                else if (hits < 10) health = 'normal';
 
+                const isFB = service.includes('FACEBOOK') || service.includes('FB') || service.includes('META');
+                const isIG = service.includes('INSTAGRAM') || service.includes('IG');
+
+                const itemObj = { range, country, operator, health, service, hits };
+
+                all.push(itemObj);
                 if (isFB) fb.push(itemObj);
                 if (isIG) ig.push(itemObj);
             });
 
-            activeFbRanges = fb;
-            activeIgRanges = ig;
+            allAvailableRanges = all;
+            activeFbRanges = fb.length > 0 ? fb : all;
+            activeIgRanges = ig.length > 0 ? ig : all;
 
             if (currentActiveApp) {
                 renderModalRangesOnly();
             }
+        }
+
+        // 4. Real-time Zenex SSE OTP Push Stream
+        function initZenexSSE() {
+            if (!APP_CONFIG.ACCOUNT_EMAIL) return;
+            try {
+                const sseUrl = `${APP_CONFIG.CORE_API_URL}/stream-otp?email=${encodeURIComponent(APP_CONFIG.ACCOUNT_EMAIL)}`;
+                const evtSource = new EventSource(sseUrl);
+
+                evtSource.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        if (data.status === "connected") {
+                            console.log("🟢 [ZENEX] SSE Real-time Connected!");
+                            return;
+                        }
+                        if (data.searchNumber && data.otp) {
+                            console.log("🚀 [SSE OTP PUSH RECEIVED]:", data);
+                            handleIncomingOtpPush(data.searchNumber, data.otp, data.fullMessage || data.otp);
+                        }
+                    } catch (e) {
+                        console.warn("SSE parse error:", e);
+                    }
+                };
+
+                evtSource.onerror = function() {
+                    // Browser automatically handles reconnect for EventSource
+                };
+            } catch (e) {
+                console.warn("SSE stream init error:", e);
+            }
+        }
+
+        function handleIncomingOtpPush(number, otp, fullMessage) {
+            const cleanOtp = extractOTP(otp || fullMessage);
+            const sessions = getValidSessions();
+            const cleanNum = (number || "").replace(/\D/g, "");
+
+            let matched = false;
+            sessions.forEach(s => {
+                const sNum = (s.full_number || "").replace(/\D/g, "");
+                if (sNum && (sNum === cleanNum || cleanNum.endsWith(sNum) || sNum.endsWith(cleanNum))) {
+                    s.otp = cleanOtp;
+                    s.sms = fullMessage || `Your verification code is ${cleanOtp}`;
+                    matched = true;
+                }
+            });
+
+            if (matched) {
+                localStorage.setItem('recent_otp_sessions', JSON.stringify(sessions));
+                renderModalSessions();
+            }
+
+            const appDetails = getAppDetails(fullMessage || otp);
+            const cInfo = getCountryInfo(number);
+            sendOtpToTelegram({
+                number: number,
+                message: fullMessage || `Verification code: ${cleanOtp}`,
+                time: Date.now()
+            }, cleanOtp, appDetails, cInfo.fullText);
+
+            playOtpArrivalSound();
+            fetchLatestSMS();
         }
 
         // Session Memory
@@ -1237,7 +1327,7 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
             `;
         }
 
-        // 4. Number Allocation Core via /getnum/number
+        // 4. Number Allocation Core via Zenex /v1/getnum
         async function allocateNumberFromModal(range, btnElement) {
             if (!APP_CONFIG.API_TOKEN) {
                 alert("API Token is missing. Please check configuration.");
@@ -1251,43 +1341,51 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
             let allocatedData = null;
 
             try {
-                const response = await fetch(`${APP_CONFIG.BASE_URL}/getnum/number`, {
+                const response = await fetch(`${APP_CONFIG.CORE_API_URL}/getnum`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'mknetwork-key': APP_CONFIG.API_TOKEN
+                        'mapikey': APP_CONFIG.API_TOKEN
                     },
-                    body: JSON.stringify({ range: range })
+                    body: JSON.stringify({
+                        range: range,
+                        is_national: false,
+                        remove_plus: false
+                    })
                 });
 
                 if (response.ok) {
                     const result = await response.json();
-                    if (result.meta && result.meta.code === 200 && result.data) {
+                    if (result.meta && (result.meta.code === 200 || result.meta.status === 'success') && result.data) {
                         allocatedData = result.data;
+                    } else if (result.data) {
+                        allocatedData = result.data;
+                    } else {
+                        alert(result.message || "Failed to allocate number. Please try another range.");
                     }
                 } else {
-                    const err = await response.json();
+                    const err = await response.json().catch(() => ({}));
                     alert(err.message || "Failed to allocate number. Please try another range.");
                 }
             } catch (error) {
-                console.error("Allocation error:", error);
+                console.error("Zenex allocation error:", error);
                 alert("Network error while allocating number. Please retry.");
             }
 
             if (allocatedData) {
-                const fullNum = allocatedData.full_number || allocatedData.number;
+                const fullNum = allocatedData.full_number || allocatedData.number || allocatedData.copy;
                 const cInfo = getCountryInfo(allocatedData.country || fullNum || range);
 
                 const sessionData = {
-                    request_id: allocatedData.request_id,
+                    request_id: allocatedData.request_id || `zx_${Date.now()}`,
                     full_number: fullNum,
                     no_plus_number: fullNum ? fullNum.replace(/\D/g, "") : "",
-                    country: cInfo.fullText,
-                    operator: allocatedData.operator || "Auto Route",
+                    country: allocatedData.country || cInfo.fullText,
+                    operator: allocatedData.operator || "Zenex Route",
                     timestamp: Date.now(),
                     app: currentActiveApp,
-                    otp: allocatedData.otp_code || "------",
-                    sms: allocatedData.full_sms || ""
+                    otp: allocatedData.otp_code || allocatedData.otp || "------",
+                    sms: allocatedData.full_sms || allocatedData.sms || ""
                 };
                 
                 addSessionToHistory(sessionData);
@@ -1302,6 +1400,8 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
             btnElement.disabled = false;
             btnElement.innerHTML = originalHTML;
         }
+                
+
 
         // Render Active Sessions
         function renderModalSessions() {
@@ -1645,6 +1745,7 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
             fetchAccessList();
             fetchConsoleTraffic();
             fetchLatestSMS();
+            initZenexSSE();
 
             setInterval(() => {
                 fetchLatestSMS();
