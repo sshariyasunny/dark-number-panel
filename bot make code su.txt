@@ -187,9 +187,14 @@
                     <input type="text" id="modal-filter-input" onkeyup="filterModalRanges()" placeholder="Filter country, dial code or operator..." 
                         class="w-full bg-[#111827] border border-gray-800 text-xs text-white pl-8 pr-3 py-1.5 rounded-lg focus:outline-none focus:border-cyan-400/60 placeholder-gray-500 font-mono">
                 </div>
-                <span id="modal-range-count" class="text-[10px] font-mono text-cyan-300 bg-cyan-950/40 border border-cyan-800/40 px-2.5 py-1 rounded-md">
-                    0 Ranges
-                </span>
+                <div class="flex items-center gap-2">
+                    <span class="text-[9px] text-[#00FF88] bg-[#00FF88]/10 border border-[#00FF88]/30 px-2 py-0.5 rounded font-mono font-bold flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#00FF88] animate-ping"></span> 1s LIVE UPDATE
+                    </span>
+                    <span id="modal-range-count" class="text-[10px] font-mono text-cyan-300 bg-cyan-950/40 border border-cyan-800/40 px-2.5 py-1 rounded-md">
+                        0 Ranges
+                    </span>
+                </div>
             </div>
             
             <!-- Split View: Top Half (Country Networks Grid) & Bottom Half (Active Numbers) -->
@@ -199,7 +204,7 @@
                 <div class="h-3/5 flex flex-col border-b border-gray-800/80">
                     <div class="px-4 py-2 text-[10px] text-gray-400 uppercase tracking-widest font-bold bg-[#0D131F]/50 flex justify-between items-center shrink-0">
                         <span class="flex items-center gap-1.5 text-cyan-300">
-                            <i class="fa-solid fa-globe text-xs"></i> Select Country to Allocate Number
+                            <i class="fa-solid fa-trophy text-amber-400 text-xs"></i> সেরা ওটিপি রেট অনুযায়ী ক্রমবিন্যাস (সর্বোচ্চ হিট সবার প্রথমে)
                         </span>
                         <span class="text-[9px] text-[#FF2233] font-mono font-bold">DEV: SHARIYA SUNNY</span>
                     </div>
@@ -351,9 +356,9 @@
                     </div>
                     
                     <div class="z-10">
-                        <button class="w-full bg-[#1877F2]/20 hover:bg-[#1877F2] text-[#60a5fa] hover:text-white border border-[#1877F2]/40 text-[10px] font-bold py-2 px-2.5 rounded-lg flex items-center justify-center gap-1.5 transition-all duration-200 group-hover:shadow-[0_0_15px_rgba(24,119,242,0.4)]">
+                        <button onclick="openTrafficModal('fb'); event.stopPropagation();" class="w-full bg-[#1877F2]/20 hover:bg-[#1877F2] text-[#60a5fa] hover:text-white border border-[#1877F2]/40 text-[11px] font-bold py-2.5 px-2.5 rounded-lg flex items-center justify-center gap-1.5 transition-all duration-200 group-hover:shadow-[0_0_15px_rgba(24,119,242,0.4)] font-orbitron">
                             <i class="fa-solid fa-bolt text-xs"></i>
-                            <span id="fb-button-label">Get FB Number</span>
+                            <span id="fb-button-label">GET FB NUMBER</span>
                         </button>
                     </div>
                     <div class="absolute bottom-0 left-0 h-[2px] bg-[#1877F2] transition-all duration-500" id="fb-progress-line" style="width: 0%"></div>
@@ -380,64 +385,15 @@
                     </div>
                     
                     <div class="z-10">
-                        <button class="w-full bg-[#E1306C]/20 hover:bg-[#E1306C] text-[#f472b6] hover:text-white border border-[#E1306C]/40 text-[10px] font-bold py-2 px-2.5 rounded-lg flex items-center justify-center gap-1.5 transition-all duration-200 group-hover:shadow-[0_0_15px_rgba(225,48,108,0.4)]">
+                        <button onclick="openTrafficModal('instagram'); event.stopPropagation();" class="w-full bg-[#E1306C]/20 hover:bg-[#E1306C] text-[#f472b6] hover:text-white border border-[#E1306C]/40 text-[11px] font-bold py-2.5 px-2.5 rounded-lg flex items-center justify-center gap-1.5 transition-all duration-200 group-hover:shadow-[0_0_15px_rgba(225,48,108,0.4)] font-orbitron">
                             <i class="fa-solid fa-bolt text-xs"></i>
-                            <span id="ig-button-label">Get IG Number</span>
+                            <span id="ig-button-label">GET IG NUMBER</span>
                         </button>
                     </div>
                     <div class="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-[#E1306C] to-[#F56040] transition-all duration-500" id="ig-progress-line" style="width: 0%"></div>
                 </div>
 
             </div>
-
-            <!-- Live Available Countries Hub (Active Zenex Matrix) -->
-            <div class="border-t border-gray-800/80 pt-3 flex flex-col gap-3">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-2">
-                        <span class="relative flex h-2.5 w-2.5">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FF88] opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00FF88]"></span>
-                        </span>
-                        <span class="text-xs font-bold font-orbitron tracking-wider text-[#00FF88] uppercase">
-                            LIVE OTP AVAILABLE COUNTRIES
-                        </span>
-                    </div>
-                    <span id="live-country-count" class="text-[10px] text-cyan-300 font-mono bg-cyan-950/40 border border-cyan-800/40 px-2 py-0.5 rounded">
-                        Syncing...
-                    </span>
-                </div>
-
-                <!-- Live Country Filter Tabs -->
-                <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-[11px] font-mono">
-                    <button onclick="filterLiveCountriesTab('all', this)" class="live-country-tab bg-cyan-500 text-slate-950 font-bold px-3 py-1 rounded-lg shrink-0 transition">
-                        🔥 All Live (<span id="tab-all-count">0</span>)
-                    </button>
-                    <button onclick="filterLiveCountriesTab('facebook', this)" class="live-country-tab bg-[#0D131F] hover:bg-gray-800 text-gray-300 font-bold px-3 py-1 rounded-lg border border-gray-800 shrink-0 transition">
-                        🔵 Facebook
-                    </button>
-                    <button onclick="filterLiveCountriesTab('instagram', this)" class="live-country-tab bg-[#0D131F] hover:bg-gray-800 text-gray-300 font-bold px-3 py-1 rounded-lg border border-gray-800 shrink-0 transition">
-                        🔴 Instagram
-                    </button>
-                    <button onclick="filterLiveCountriesTab('whatsapp', this)" class="live-country-tab bg-[#0D131F] hover:bg-gray-800 text-gray-300 font-bold px-3 py-1 rounded-lg border border-gray-800 shrink-0 transition">
-                        🟢 WhatsApp
-                    </button>
-                </div>
-
-                <!-- Live Country Grid Cards -->
-                <div id="live-countries-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <div class="col-span-full py-6 text-center text-gray-500 font-mono text-xs flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-circle-notch animate-spin text-cyan-400"></i>
-                        <span>Syncing live countries from Zenex Network...</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Global / All Platforms Fast Allocation Button -->
-            <button onclick="openTrafficModal('all')" class="w-full bg-[#080C14] hover:bg-cyan-950/30 border border-cyan-500/30 hover:border-cyan-400 text-cyan-300 hover:text-white text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-sm mt-0.5">
-                <i class="fa-solid fa-layer-group text-cyan-400"></i>
-                <span class="font-orbitron text-[11px]">BROWSE ALL 35+ COUNTRY NETWORKS</span>
-                <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i>
-            </button>
         </div>
 
         <!-- Live Codes Feed Section -->
@@ -1199,6 +1155,10 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
                 if (isIG) ig.push(itemObj);
             });
 
+            all.sort((a, b) => (Number(b.hits) || 0) - (Number(a.hits) || 0));
+            fb.sort((a, b) => (Number(b.hits) || 0) - (Number(a.hits) || 0));
+            ig.sort((a, b) => (Number(b.hits) || 0) - (Number(a.hits) || 0));
+
             allAvailableRanges = all;
             activeFbRanges = fb.length > 0 ? fb : all;
             activeIgRanges = ig.length > 0 ? ig : all;
@@ -1413,32 +1373,43 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
             localStorage.setItem('recent_otp_sessions', JSON.stringify(sessions));
         }
 
-        // Modal Controls
+        // Modal Controls & Live 1-Second Auto-Refresh Engine
+        let liveModalTimer = null;
+
         function openTrafficModal(app) {
             const modal = document.getElementById('traffic-modal');
             const title = document.getElementById('modal-title');
             if (!modal || !title) return;
 
-            currentActiveApp = app;
+            currentActiveApp = (app === 'fb' ? 'facebook' : (app === 'ig' ? 'instagram' : app));
             document.body.style.overflow = 'hidden';
 
-            if (app === 'facebook') {
+            if (currentActiveApp === 'facebook') {
                 title.innerHTML = `<i class="fa-brands fa-facebook text-[#1877F2] text-base"></i> FACEBOOK LIVE NETWORKS`;
-            } else if (app === 'instagram') {
+            } else if (currentActiveApp === 'instagram') {
                 title.innerHTML = `<i class="fa-brands fa-instagram text-[#E1306C] text-base"></i> INSTAGRAM LIVE NETWORKS`;
             } else {
                 title.innerHTML = `<i class="fa-solid fa-layer-group text-cyan-400 text-base"></i> ALL AVAILABLE COUNTRY NETWORKS`;
             }
 
-            if (!allAvailableRanges || allAvailableRanges.length === 0) {
-                fetchAccessList();
-            }
-
+            fetchAccessList();
             renderModalRangesOnly();
             renderModalSessions();
 
             modal.classList.remove('opacity-0', 'pointer-events-none', 'scale-95');
             modal.classList.add('opacity-100', 'scale-100');
+
+            // ⚡ Live 1-Second Update Loop while Modal is Open
+            if (liveModalTimer) clearInterval(liveModalTimer);
+            liveModalTimer = setInterval(() => {
+                const m = document.getElementById('traffic-modal');
+                if (m && !m.classList.contains('pointer-events-none')) {
+                    fetchAccessList();
+                } else {
+                    clearInterval(liveModalTimer);
+                    liveModalTimer = null;
+                }
+            }, 1000);
         }
 
         function closeTrafficModal() {
@@ -1446,6 +1417,10 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
             if (modal) {
                 modal.classList.remove('opacity-100', 'scale-100');
                 modal.classList.add('opacity-0', 'pointer-events-none', 'scale-95');
+            }
+            if (liveModalTimer) {
+                clearInterval(liveModalTimer);
+                liveModalTimer = null;
             }
             document.body.style.overflow = '';
         }
@@ -1455,79 +1430,160 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
             const countEl = document.getElementById('modal-range-count');
             if (!list) return;
 
-            let displayRanges = allAvailableRanges;
-            if (currentActiveApp === 'facebook') displayRanges = activeFbRanges;
-            else if (currentActiveApp === 'instagram') displayRanges = activeIgRanges;
+            let displayRanges = allAvailableRanges || [];
+            if (currentActiveApp === 'facebook') displayRanges = activeFbRanges || [];
+            else if (currentActiveApp === 'instagram') displayRanges = activeIgRanges || [];
 
-            const filterQuery = (document.getElementById('modal-filter-input')?.value || "").toLowerCase();
+            let workingRanges = [...displayRanges];
+
+            const filterQuery = (document.getElementById('modal-filter-input')?.value || "").toLowerCase().trim();
             if (filterQuery) {
-                displayRanges = displayRanges.filter(it => {
+                workingRanges = workingRanges.filter(it => {
                     const r = (it.phone_range || it.range || "").toLowerCase();
                     const c = (it.country || "").toLowerCase();
                     const o = (it.operator || "").toLowerCase();
-                    return r.includes(filterQuery) || c.includes(filterQuery) || o.includes(filterQuery);
+                    const s = (it.service || "").toLowerCase();
+                    return r.includes(filterQuery) || c.includes(filterQuery) || o.includes(filterQuery) || s.includes(filterQuery);
                 });
             }
 
-            if (countEl) countEl.innerText = `${displayRanges.length} Networks`;
+            // 🎯 Sort strictly descending by hits: Highest hit country is ALWAYS #1 at the top!
+            workingRanges.sort((a, b) => (Number(b.hits) || 0) - (Number(a.hits) || 0));
 
-            if (!displayRanges || displayRanges.length === 0) {
+            if (countEl) countEl.innerText = `${workingRanges.length} Live Routes`;
+
+            if (workingRanges.length === 0) {
                 list.innerHTML = `
-                    <div class="col-span-full py-8 text-center text-gray-500 font-mono text-xs">
-                        <i class="fa-solid fa-spinner animate-spin text-cyan-400 text-lg mb-2 block"></i>
-                        Loading Available Networks...
+                    <div class="col-span-full py-12 text-center text-gray-500 font-mono text-xs flex flex-col items-center justify-center gap-2">
+                        <i class="fa-solid fa-circle-notch animate-spin text-cyan-400 text-xl mb-1"></i>
+                        <span>Connecting to live Zenex routes...</span>
                     </div>
                 `;
                 return;
             }
 
             let html = "";
-            displayRanges.forEach(it => {
+            workingRanges.forEach((it, index) => {
                 const range = it.phone_range || it.range;
                 const country = it.country;
-                const operator = it.operator || 'Auto Route';
+                const operator = it.operator || 'Fast Route';
                 const health = it.health || 'good';
-                html += createRangeCardHTML(range, country, operator, health);
+                const hits = Number(it.hits) || 0;
+                const rank = index + 1; // Serial position: 1, 2, 3...
+                html += createRangeCardHTML(range, country, operator, health, hits, rank);
             });
 
+            // Smooth scroll preservation during 1-second real-time updates
+            const prevScroll = list.scrollTop;
             list.innerHTML = html;
+            list.scrollTop = prevScroll;
         }
 
         function filterModalRanges() {
             renderModalRangesOnly();
         }
 
-        function createRangeCardHTML(range, country, operator, health) {
+        function createRangeCardHTML(range, country, operator, health, hits, rank) {
             const cInfo = getCountryInfo(country || range);
-            const isHigh = health === 'excellent' || health === 'good';
+            const numHits = Number(hits) || 0;
             
-            const healthBadge = isHigh 
-                ? `<span class="text-[9px] text-emerald-400 font-bold bg-emerald-950/40 border border-emerald-800/40 px-1.5 py-0.5 rounded-md flex items-center gap-1 font-mono">
-                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> FAST OTP
-                   </span>` 
-                : `<span class="text-[9px] text-cyan-400 font-bold bg-cyan-950/40 border border-cyan-800/40 px-1.5 py-0.5 rounded-md flex items-center gap-1 font-mono">
-                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> ACTIVE
-                   </span>`;
+            let rankBadge = "";
+            let rankCardStyle = "";
+            let recommendationAdvice = "";
+
+            if (rank === 1) {
+                rankBadge = `
+                    <span class="bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full shadow-[0_0_15px_rgba(245,158,11,0.6)] flex items-center gap-1 font-orbitron tracking-wider">
+                        <i class="fa-solid fa-crown text-[10px]"></i> #1 BEST CHOICE (১ম পছন্দ)
+                    </span>
+                `;
+                rankCardStyle = "border-amber-400/90 bg-gradient-to-b from-[#1d1a10] to-[#0A0F1A] shadow-[0_0_25px_rgba(245,158,11,0.25)] ring-1 ring-amber-400/50";
+                recommendationAdvice = `
+                    <div class="flex items-center gap-1.5 text-[10px] font-bold text-amber-300 font-rajdhani">
+                        <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                        <span>সর্বোচ্চ হিট ও দ্রুততম ওটিপি — এটি নেওয়া সবচেয়ে ভালো</span>
+                    </div>
+                `;
+            } else if (rank === 2) {
+                rankBadge = `
+                    <span class="bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full shadow-[0_0_12px_rgba(0,240,255,0.4)] flex items-center gap-1 font-orbitron tracking-wider">
+                        <i class="fa-solid fa-fire text-amber-300 text-[10px]"></i> #2 HIGH SUCCESS (২য় পছন্দ)
+                    </span>
+                `;
+                rankCardStyle = "border-cyan-500/70 bg-[#0D131F] shadow-[0_0_15px_rgba(0,240,255,0.15)]";
+                recommendationAdvice = `
+                    <div class="flex items-center gap-1.5 text-[10px] font-semibold text-cyan-300 font-rajdhani">
+                        <i class="fa-solid fa-bolt text-cyan-400 text-xs"></i>
+                        <span>উচ্চ ট্র্যাফিক রুট ও দ্রুত ওটিপি রেট</span>
+                    </div>
+                `;
+            } else if (rank === 3) {
+                rankBadge = `
+                    <span class="bg-blue-600/30 border border-blue-400/60 text-blue-300 font-bold text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-orbitron tracking-wider">
+                        <i class="fa-solid fa-medal text-yellow-400 text-[10px]"></i> #3 EXCELLENT (৩য় পছন্দ)
+                    </span>
+                `;
+                rankCardStyle = "border-blue-500/50 bg-[#0D131F]";
+                recommendationAdvice = `
+                    <div class="flex items-center gap-1.5 text-[10px] font-medium text-blue-300 font-rajdhani">
+                        <i class="fa-solid fa-check text-emerald-400 text-xs"></i>
+                        <span>স্থায়ী নেটওয়ার্ক রুট ও ভালো ডেলিভারি</span>
+                    </div>
+                `;
+            } else {
+                rankBadge = `
+                    <span class="bg-gray-800/80 border border-gray-700/80 text-gray-300 font-bold text-[10px] px-2 py-0.5 rounded font-mono">
+                        #${rank} ROUTE
+                    </span>
+                `;
+                rankCardStyle = "border-gray-800/80 bg-[#0A0F1A] hover:border-gray-700";
+                recommendationAdvice = `
+                    <div class="flex items-center gap-1 text-[10px] text-gray-400 font-mono">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        <span>সচল লাইভ রুট</span>
+                    </div>
+                `;
+            }
 
             return `
-                <div class="bg-[#0D131F] hover:bg-[#121B2B] p-3 rounded-xl border border-gray-800/80 hover:border-cyan-500/40 transition duration-200 flex flex-col justify-between gap-2.5 shadow-md">
-                    <div class="flex flex-col gap-1">
+                <div class="p-3 sm:p-3.5 rounded-xl border ${rankCardStyle} transition duration-200 flex flex-col justify-between gap-2.5 shadow-md">
+                    <div class="flex flex-col gap-1.5">
+                        
+                        <!-- Top Meta Header: Serial Rank + Live Hits Counter -->
                         <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-1.5 truncate">
-                                <span class="text-base">${cInfo.flag}</span>
-                                <span class="text-xs font-bold text-white font-rajdhani truncate">${cInfo.name}</span>
+                            ${rankBadge}
+                            <div class="flex items-center gap-1.5 bg-black/80 border border-emerald-500/40 px-2.5 py-0.5 rounded-lg shrink-0">
+                                <i class="fa-solid fa-bolt text-amber-400 text-[10px] animate-pulse"></i>
+                                <span class="text-xs font-mono font-black text-[#00FF88]">${numHits} HITS</span>
                             </div>
-                            ${healthBadge}
                         </div>
-                        <div class="flex items-center justify-between text-[10px] text-gray-400 font-mono mt-0.5">
-                            <span class="text-cyan-300 font-bold tracking-wide">${range}</span>
-                            <span class="text-gray-500 truncate max-w-[110px]">${operator}</span>
+
+                        <!-- Country Info & Dial Range -->
+                        <div class="flex items-center justify-between pt-1">
+                            <div class="flex items-center gap-2 truncate">
+                                <span class="text-2xl shrink-0">${cInfo.flag}</span>
+                                <div class="truncate">
+                                    <div class="text-xs font-black text-white font-rajdhani truncate tracking-wide">${cInfo.name}</div>
+                                    <div class="text-[11px] font-bold text-cyan-300 font-mono tracking-wider">+${range}</div>
+                                </div>
+                            </div>
+                            <span class="text-[10px] text-gray-400 font-mono text-right truncate max-w-[100px] shrink-0 bg-gray-900/60 px-2 py-0.5 rounded border border-gray-800">
+                                ${operator}
+                            </span>
                         </div>
+
+                        <!-- Recommendation Advice -->
+                        <div class="pt-0.5">
+                            ${recommendationAdvice}
+                        </div>
+
                     </div>
+
+                    <!-- Direct Number Allocation Button -->
                     <button onclick="allocateNumberFromModal('${range}', this)" 
-                        class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-[11px] font-orbitron py-2 rounded-lg transition duration-200 shadow-md shadow-cyan-500/10 flex items-center justify-center gap-1.5 active:scale-[0.98]">
-                        <i class="fa-solid fa-bolt text-[10px]"></i>
-                        <span>GET NUMBER</span>
+                        class="w-full ${rank === 1 ? 'bg-gradient-to-r from-amber-400 via-emerald-400 to-cyan-400 hover:from-amber-300 hover:to-cyan-300 text-slate-950 font-black shadow-lg shadow-amber-500/20' : 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black shadow-md shadow-cyan-500/10'} text-[11px] font-orbitron py-2.5 rounded-xl transition duration-200 flex items-center justify-center gap-1.5 active:scale-[0.98]">
+                        <i class="fa-solid fa-bolt text-xs"></i>
+                        <span>GET ${cInfo.name.toUpperCase()} NUMBER</span>
                     </button>
                 </div>
             `;
@@ -1961,6 +2017,14 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
                 fetchLatestSMS();
                 fetchConsoleTraffic();
             }, 3000);
+
+            // ⚡ Real-time 1-Second Auto-Refresh for Modal Hits & Route Rankings
+            setInterval(() => {
+                const modal = document.getElementById('traffic-modal');
+                if (modal && !modal.classList.contains('pointer-events-none')) {
+                    fetchAccessList();
+                }
+            }, 1000);
 
             setInterval(() => {
                 fetchAccessList();
