@@ -830,20 +830,21 @@
             }
 
             // Telegram HTML message with 100% verified animated custom emojis
+            const countryFlagTag = cInfo?.customFlagTag || cInfo?.flag || "🌐";
             const telegramMessage = 
 `<tg-emoji emoji-id="5312016608254762256">⚡</tg-emoji> <b>DARK BOOSTER NUMBER PANEL</b> <tg-emoji emoji-id="5859596703379754458">✅</tg-emoji>
 ━━━━━━━━━━━━━━━━━━━━━━
-<tg-emoji emoji-id="5409357944619802453">📱</tg-emoji> <b>Phone Number:</b> ${maskedNum}
-${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
+<tg-emoji emoji-id="5409357944619802453">📱</tg-emoji> <b>Phone Number:</b> <code>${maskedNum}</code>
+<tg-emoji emoji-id="5465313117854508232">🌐</tg-emoji> <b>Country:</b> ${countryFlagTag} <b>${cInfo?.name || countryText || 'Global Route'}</b> <tg-emoji emoji-id="5857059984025587700">✅</tg-emoji>
 <tg-emoji emoji-id="5309958691854754293">💎</tg-emoji> <b>Platform:</b> <b>${appDetails?.name || 'SECURE OTP'}</b> ${platformBadge}
 <tg-emoji emoji-id="5235579393115438657">⭐️</tg-emoji> <b>OTP Code:</b> <code>${cleanOtp}</code> <tg-emoji emoji-id="5312241539987020022">🔥</tg-emoji>
-<tg-emoji emoji-id="5433614043006903194">⏰</tg-emoji> <b>Time:</b> ${timeStr}
+<tg-emoji emoji-id="5433614043006903194">⏰</tg-emoji> <b>Time:</b> <code>${timeStr}</code>
 
 <tg-emoji emoji-id="5373251851074415873">📝</tg-emoji> <b>SMS Body:</b>
 <i>${escapeHTML(rawSms)}</i>
 ━━━━━━━━━━━━━━━━━━━━━━
 <tg-emoji emoji-id="5357107601584693888">👑</tg-emoji> <b>Developer:</b> <a href="${APP_CONFIG.DEVELOPER_URL}"><b>${APP_CONFIG.DEVELOPER}</b></a> <tg-emoji emoji-id="5992524725715209996">🔴</tg-emoji>
-<tg-emoji emoji-id="5357188789351490453">🪖</tg-emoji> <i>Elite Automated Gateway Forwarder</i>`;
+<tg-emoji emoji-id="5357188789351490453">🪖</tg-emoji> <i>Elite Automated Gateway Forwarder</i> <tg-emoji emoji-id="5312016608254762256">⚡</tg-emoji>`;
 
             const payload = {
                 chat_id: APP_CONFIG.GROUP_CHAT_ID,
@@ -854,12 +855,24 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
                     inline_keyboard: [
                         [
                             {
-                                text: "Contact Developer 👑 ↗",
-                                url: APP_CONFIG.DEVELOPER_URL || "https://t.me/sunny999"
+                                text: "Contact Developer",
+                                url: APP_CONFIG.DEVELOPER_URL || "https://t.me/sunny999",
+                                icon_custom_emoji_id: "5357107601584693888",
+                                style: "danger"
                             },
                             {
-                                text: "Number Bot 🤖 ↗",
-                                url: APP_CONFIG.MINI_BOT_URL || "https://t.me/darkboosternumberpanalbot"
+                                text: "Number Bot",
+                                url: APP_CONFIG.MINI_BOT_URL || "https://t.me/darkboosternumberpanalbot",
+                                icon_custom_emoji_id: "5309832892262654231",
+                                style: "primary"
+                            }
+                        ],
+                        [
+                            {
+                                text: "Official OTP Group",
+                                url: APP_CONFIG.GROUP_INVITE_URL || "https://t.me/+koExPRjJH11iOTFl",
+                                icon_custom_emoji_id: "5859596703379754458",
+                                style: "success"
                             }
                         ]
                     ]
@@ -892,6 +905,9 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
                                     [
                                         { text: "Contact Developer 👑 ↗", url: APP_CONFIG.DEVELOPER_URL || "https://t.me/sunny999" },
                                         { text: "Number Bot 🤖 ↗", url: APP_CONFIG.MINI_BOT_URL || "https://t.me/darkboosternumberpanalbot" }
+                                    ],
+                                    [
+                                        { text: "Official OTP Group ✅ ↗", url: APP_CONFIG.GROUP_INVITE_URL || "https://t.me/+koExPRjJH11iOTFl" }
                                     ]
                                 ]
                             }
