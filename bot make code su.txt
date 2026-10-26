@@ -200,13 +200,15 @@
             <!-- Split View: Top Half (Country Networks Grid) & Bottom Half (Active Numbers) -->
             <div class="flex-1 flex flex-col overflow-hidden">
                 
-                <!-- Section 1: Countries & Ranges Grid -->
-                <div class="h-3/5 flex flex-col border-b border-gray-800/80">
-                    <div class="px-4 py-2 text-[10px] text-gray-400 uppercase tracking-widest font-bold bg-[#0D131F]/50 flex justify-between items-center shrink-0">
-                        <span class="flex items-center gap-1.5 text-cyan-300">
-                            <i class="fa-solid fa-trophy text-amber-400 text-xs"></i> সেরা ওটিপি রেট অনুযায়ী ক্রমবিন্যাস (সর্বোচ্চ হিট সবার প্রথমে)
+                <!-- Section 1: Countries & Ranges Grid (নাম্বার নেওয়ার অপশন - CYAN THEME) -->
+                <div class="h-3/5 flex flex-col border-b-2 border-cyan-500/40">
+                    <div class="px-4 py-2.5 text-[10px] uppercase tracking-wider font-bold bg-[#07172B] border-b border-cyan-500/30 flex justify-between items-center shrink-0">
+                        <span class="flex items-center gap-2 text-cyan-300 font-orbitron font-bold">
+                            <i class="fa-solid fa-phone text-cyan-400"></i> ১. নাম্বার নেওয়ার অপশন (GET NUMBER SECTION)
                         </span>
-                        <span class="text-[9px] text-[#FF2233] font-mono font-bold">DEV: SHARIYA SUNNY</span>
+                        <span class="text-[9px] text-amber-300 font-mono font-bold flex items-center gap-1 bg-amber-950/60 border border-amber-500/40 px-2 py-0.5 rounded">
+                            <i class="fa-solid fa-trophy text-amber-400"></i> শীর্ষ হিট ১ম (BEST 1ST)
+                        </span>
                     </div>
                     
                     <div id="modal-range-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 p-3 sm:p-4 overflow-y-auto flex-1 bg-[#05070B]/40 content-start">
@@ -214,13 +216,15 @@
                     </div>
                 </div>
 
-                <!-- Section 2: Active Session & Real-time OTP Log -->
-                <div class="h-2/5 flex flex-col bg-[#080C14]">
-                    <div class="px-4 py-2 text-[10px] text-emerald-400 uppercase tracking-widest font-bold bg-[#0D131F]/70 flex justify-between items-center shrink-0 border-b border-gray-800/40">
-                        <span class="flex items-center gap-1.5">
-                            <i class="fa-solid fa-satellite-dish animate-pulse"></i> Active Allocation Sessions
+                <!-- Section 2: Active Session & Real-time OTP Log (ওটিপি অপশন - NEON GREEN THEME) -->
+                <div class="h-2/5 flex flex-col bg-[#05140D] border-t-2 border-[#00FF88]/50">
+                    <div class="px-4 py-2.5 text-[10px] uppercase tracking-wider font-bold bg-[#041D12] border-b border-[#00FF88]/30 flex justify-between items-center shrink-0">
+                        <span class="flex items-center gap-2 text-[#00FF88] font-orbitron font-bold">
+                            <i class="fa-solid fa-key text-amber-400"></i> ২. ওটিপি কোড অপশন (RECEIVED OTP SECTION)
                         </span>
-                        <span class="text-[9px] text-gray-400 font-mono">Auto Sync SIM Feeds</span>
+                        <span class="text-[9px] text-[#00FF88] font-mono flex items-center gap-1.5 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded font-bold animate-pulse">
+                            <i class="fa-solid fa-satellite-dish"></i> অটো সিঙ্ক সক্রিয়
+                        </span>
                     </div>
                     <div id="modal-active-session-container" class="overflow-y-auto p-3 flex flex-col gap-2.5 flex-1">
                         <!-- Dynamic active sessions injected here -->
@@ -1694,39 +1698,66 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
                 const cInfo = getCountryInfo(data.country || data.full_number);
 
                 html += `
-                    <div class="bg-[#0D131F] border ${isOtpReceived ? 'border-emerald-500/60 shadow-[0_0_15px_rgba(0,255,136,0.2)]' : 'border-gray-800'} p-3 rounded-xl flex flex-col gap-2">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm">${cInfo.flag}</span>
-                                <span class="text-xs font-bold font-mono text-cyan-300 tracking-wider">${data.full_number}</span>
-                                <button onclick="copyToClipboard('${data.full_number}')" title="Copy Number" class="text-gray-400 hover:text-white text-xs p-1">
-                                    <i class="fa-regular fa-copy"></i>
-                                </button>
-                            </div>
-                            <span class="text-[10px] font-mono ${remaining < 120000 ? 'text-red-400' : 'text-gray-400'} flex items-center gap-1">
+                    <div class="bg-[#0B101B] border border-gray-800/90 p-3 rounded-xl flex flex-col gap-2.5 shadow-lg">
+                        
+                        <!-- Top Bar: Timer & Operator -->
+                        <div class="flex justify-between items-center text-[10px] font-mono border-b border-gray-800/80 pb-1.5">
+                            <span class="text-gray-400 font-bold">${cInfo.name} • <span class="text-gray-500">${data.operator}</span></span>
+                            <span class="${remaining < 120000 ? 'text-red-400' : 'text-cyan-400'} flex items-center gap-1 font-bold">
                                 <i class="fa-regular fa-clock text-[9px]"></i> ${timerStr}
                             </span>
                         </div>
 
-                        <div class="flex justify-between items-center text-[10px] text-gray-400">
-                            <span>${cInfo.name}</span>
-                            <span class="text-gray-500">${data.operator}</span>
+                        <!-- 📱 ১. ভার্চুয়াল ফোন নম্বর বক্স (ELECTRIC CYAN THEME) -->
+                        <div class="bg-gradient-to-r from-[#07162C] to-[#0A1E38] border-2 border-cyan-500/70 rounded-xl p-2.5 flex justify-between items-center shadow-[0_0_15px_rgba(0,240,255,0.15)]">
+                            <div class="flex items-center gap-2 truncate">
+                                <span class="text-xl shrink-0">${cInfo.flag}</span>
+                                <div class="truncate">
+                                    <div class="text-[9px] font-bold font-mono text-cyan-400 uppercase tracking-wider flex items-center gap-1">
+                                        <i class="fa-solid fa-phone text-[8px]"></i> ভার্চুয়াল নম্বর (PHONE NUMBER):
+                                    </div>
+                                    <div onclick="copyToClipboard('${data.full_number}', 'number')" class="text-sm font-black font-mono text-white tracking-widest cursor-pointer select-all hover:text-cyan-300 transition">
+                                        ${data.full_number}
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="copyToClipboard('${data.full_number}', 'number')" 
+                                    class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-[10px] font-orbitron px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition active:scale-95 shadow-md shadow-cyan-500/25 shrink-0" 
+                                    title="নম্বরটি কপি করুন">
+                                <i class="fa-regular fa-copy"></i>
+                                <span>COPY NUMBER</span>
+                            </button>
                         </div>
 
-                        <div onclick="copyToClipboard('${isOtpReceived ? data.otp : data.full_number}')" 
-                             class="cursor-pointer bg-[#05070B] border ${isOtpReceived ? 'border-emerald-500/40 bg-emerald-950/20' : 'border-gray-800'} rounded-lg p-2.5 text-center flex flex-col items-center justify-center transition duration-200 hover:border-cyan-400">
-                            <div class="text-xl font-black font-mono tracking-widest ${isOtpReceived ? 'text-[#00FF88] animate-pulse' : 'text-gray-400'}">
+                        <!-- ⚡ ২. প্রাপ্ত ওটিপি কোড বক্স (NEON EMERALD GREEN THEME) -->
+                        <div class="bg-gradient-to-b ${isOtpReceived ? 'from-[#062417] via-[#093522] to-[#04160E] border-2 border-[#00FF88] shadow-[0_0_20px_rgba(0,255,136,0.3)]' : 'from-[#0b1610] to-[#070e0a] border border-emerald-900/60'} rounded-xl p-3 text-center flex flex-col items-center justify-center gap-1.5">
+                            <div class="text-[9px] font-bold font-mono tracking-widest uppercase flex items-center gap-1.5 ${isOtpReceived ? 'text-[#00FF88]' : 'text-gray-400'}">
+                                <i class="fa-solid fa-key text-amber-400"></i>
+                                <span>${isOtpReceived ? '✅ প্রাপ্ত ওটিপি কোড (RECEIVED OTP CODE):' : '⏳ ওটিপির জন্য অপেক্ষা করা হচ্ছে (WAITING FOR OTP):'}</span>
+                            </div>
+
+                            <div onclick="copyToClipboard('${isOtpReceived ? data.otp : ''}', 'otp')" 
+                                 class="cursor-pointer text-2xl sm:text-3xl font-black font-mono tracking-widest ${isOtpReceived ? 'text-[#00FF88] scale-105 animate-pulse' : 'text-gray-500'}">
                                 ${data.otp}
                             </div>
-                            ${isOtpReceived ? `<p class="text-[10px] text-emerald-400 font-mono mt-1 break-all">${data.sms}</p>` : ''}
-                            <span class="text-[9px] text-gray-500 uppercase tracking-widest mt-1 hover:text-cyan-300">
-                                ${isOtpReceived ? '⚡ TAP TO COPY OTP ⚡' : 'CLICK TO COPY NUMBER'}
-                            </span>
+
+                            ${isOtpReceived ? `
+                                <button onclick="copyToClipboard('${data.otp}', 'otp')" 
+                                        class="bg-[#00FF88] hover:bg-emerald-300 text-slate-950 font-black text-[11px] font-orbitron px-5 py-1.5 rounded-lg flex items-center gap-1.5 shadow-md shadow-[#00FF88]/40 transition active:scale-95" 
+                                        title="ওটিপি কোড কপি করুন">
+                                    <i class="fa-regular fa-copy text-xs"></i>
+                                    <span>COPY OTP CODE</span>
+                                </button>
+                                <p class="text-[10px] text-emerald-400/90 font-mono mt-0.5 break-all max-w-full">${escapeHTML(data.sms || '')}</p>
+                            ` : `
+                                <span class="text-[9px] text-gray-500 font-mono">নম্বরটি অ্যাপে বসান, ওটিপি আসলে এখানে সবুজ হয়ে ভেসে উঠবে</span>
+                            `}
                         </div>
+
                         ${isOtpReceived ? `
                             <button onclick="manualForwardOtp('${data.full_number}', '${data.otp}', '${escapeHTML(data.sms || '')}')" 
-                                class="w-full bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/50 text-emerald-300 hover:text-white py-1.5 rounded-lg text-[11px] font-mono font-bold flex items-center justify-center gap-1.5 transition">
-                                <i class="fa-brands fa-telegram text-emerald-400"></i>
+                                class="w-full bg-emerald-500/20 hover:bg-emerald-500/35 border border-emerald-500/50 text-emerald-300 hover:text-white py-2 rounded-xl text-[11px] font-mono font-bold flex items-center justify-center gap-1.5 transition">
+                                <i class="fa-brands fa-telegram text-emerald-400 text-sm"></i>
                                 <span>FORWARD OTP TO TELEGRAM GROUP 📢</span>
                             </button>
                         ` : ''}
@@ -1805,27 +1836,58 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
                             </div>
                         </div>
 
-                        <!-- Phone Number & Country Flag -->
-                        <div class="flex justify-between items-center bg-[#080C14] border border-gray-800/80 rounded-xl px-3.5 py-2.5">
-                            <div class="flex items-center gap-2.5">
-                                <span class="text-xl">${cInfo.flag}</span>
-                                <div>
-                                    <div class="text-sm font-black font-mono tracking-wider text-white">${formattedNumber}</div>
-                                    <div class="text-[10px] text-gray-400 font-mono">${cInfo.name}</div>
+                        <!-- 📱 ১. ভার্চুয়াল ফোন নম্বর অপশন (ELECTRIC CYAN THEME) -->
+                        <div class="bg-gradient-to-r from-[#07162C] to-[#0A1E38] border-2 border-cyan-500/70 rounded-xl p-3 flex justify-between items-center shadow-[0_0_20px_rgba(0,240,255,0.15)]">
+                            <div class="flex items-center gap-3 truncate">
+                                <span class="text-2xl shrink-0">${cInfo.flag}</span>
+                                <div class="truncate">
+                                    <div class="text-[9px] font-bold font-mono text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
+                                        <i class="fa-solid fa-phone text-[9px]"></i> <span>১. ভার্চুয়াল ফোন নম্বর (PHONE NUMBER):</span>
+                                    </div>
+                                    <div onclick="copyToClipboard('${number}', 'number')" class="text-base sm:text-lg font-black font-mono tracking-wider text-white hover:text-cyan-300 transition cursor-pointer select-all">
+                                        ${formattedNumber}
+                                    </div>
+                                    <div class="text-[10px] text-cyan-300/80 font-mono">${cInfo.name}</div>
                                 </div>
                             </div>
-                            <button onclick="copyToClipboard('${number}')" class="text-gray-400 hover:text-cyan-300 text-xs p-1.5 rounded-lg bg-gray-900 border border-gray-800" title="Copy Number">
-                                <i class="fa-regular fa-copy"></i>
+                            <button onclick="copyToClipboard('${number}', 'number')" 
+                                    class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs font-orbitron px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 shadow-md shadow-cyan-500/30 transition active:scale-95 shrink-0" 
+                                    title="নম্বরটি কপি করুন">
+                                <i class="fa-regular fa-copy text-sm"></i>
+                                <span>COPY NUMBER</span>
                             </button>
                         </div>
 
-                        <!-- Giant Glowing OTP Display -->
-                        <div onclick="copyToClipboard('${otpCode}')" class="cursor-pointer py-3 text-center bg-gradient-to-b from-[#080C14] to-[#0D131F] rounded-xl border border-cyan-500/20 hover:border-cyan-400 transition duration-300 group">
-                            <div class="text-3xl sm:text-4xl font-black font-mono tracking-widest text-[#00FF88] group-hover:scale-105 transition-transform duration-200">
-                                ${otpCode}
+                        <!-- ⚡ ২. প্রাপ্ত ওটিপি কোড অপশন (NEON EMERALD GREEN THEME) -->
+                        <div class="bg-gradient-to-b from-[#062417] via-[#093522] to-[#04160E] border-2 border-[#00FF88] rounded-xl p-3.5 flex flex-col items-center justify-center gap-2 shadow-[0_0_25px_rgba(0,255,136,0.3)] relative overflow-hidden group">
+                            
+                            <!-- Header Inside OTP Box -->
+                            <div class="w-full flex justify-between items-center border-b border-[#00FF88]/20 pb-1.5">
+                                <span class="text-[9px] font-bold font-mono text-[#00FF88] uppercase tracking-widest flex items-center gap-1.5">
+                                    <i class="fa-solid fa-key text-amber-400 text-xs"></i> <span>২. প্রাপ্ত ওটিপি কোড (RECEIVED OTP CODE):</span>
+                                </span>
+                                <span class="text-[9px] text-[#00FF88] font-mono bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded font-bold flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#00FF88] animate-ping"></span> LIVE
+                                </span>
                             </div>
-                            <span class="text-[9px] text-gray-500 font-mono tracking-widest uppercase mt-1 block group-hover:text-cyan-300">
-                                ⚡ TAP TO COPY OTP CODE ⚡
+
+                            <!-- Giant Glowing Digits -->
+                            <div onclick="copyToClipboard('${otpCode}', 'otp')" class="cursor-pointer py-1 text-center w-full group">
+                                <div class="text-4xl sm:text-5xl font-black font-mono tracking-widest text-[#00FF88] group-hover:scale-105 transition-transform duration-200 drop-shadow-[0_0_15px_rgba(0,255,136,0.7)]">
+                                    ${otpCode}
+                                </div>
+                            </div>
+
+                            <!-- Easy One-Click Copy OTP Button -->
+                            <button onclick="copyToClipboard('${otpCode}', 'otp')" 
+                                    class="w-full sm:w-auto bg-[#00FF88] hover:bg-emerald-300 text-slate-950 font-black text-xs font-orbitron px-8 py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-[#00FF88]/40 transition active:scale-95" 
+                                    title="ওটিপি কোড কপি করুন">
+                                <i class="fa-regular fa-copy text-sm"></i>
+                                <span>COPY OTP CODE (ওটিপি কপি)</span>
+                            </button>
+                            
+                            <span class="text-[9px] text-emerald-400/80 font-mono tracking-wider">
+                                ⚡ ওটিপির উপরে ক্লিক করলেও সরাসরি কপি হবে ⚡
                             </span>
                         </div>
 
@@ -1841,12 +1903,12 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
                                 <i class="fa-solid fa-bolt text-xs"></i>
                                 <span>GET ${cInfo.name.toUpperCase()} NUMBER (${cInfo.flag} এই দেশের নম্বর নিন)</span>
                             </button>
-                            <button onclick="copyToClipboard('${otpCode}')" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs font-orbitron py-2.5 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-md shadow-cyan-500/10">
-                                <i class="fa-regular fa-copy"></i>
+                            <button onclick="copyToClipboard('${otpCode}', 'otp')" class="bg-[#00FF88] hover:bg-emerald-300 text-slate-950 font-black text-xs font-orbitron py-2.5 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-md shadow-[#00FF88]/20 active:scale-95">
+                                <i class="fa-regular fa-copy text-sm"></i>
                                 <span>COPY OTP</span>
                             </button>
-                            <button onclick="copyToClipboard('${number}')" class="bg-gray-900 hover:bg-gray-800 border border-gray-800 text-gray-300 hover:text-white font-bold text-xs font-orbitron py-2.5 rounded-xl flex items-center justify-center gap-2 transition duration-200">
-                                <i class="fa-solid fa-phone text-[10px]"></i>
+                            <button onclick="copyToClipboard('${number}', 'number')" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs font-orbitron py-2.5 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-md shadow-cyan-500/20 active:scale-95">
+                                <i class="fa-solid fa-phone text-xs"></i>
                                 <span>COPY NUMBER</span>
                             </button>
                             <button onclick="manualForwardOtp('${number}', '${otpCode}', '${escapeHTML(rawSms)}')" class="col-span-2 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 hover:from-emerald-500/30 hover:to-cyan-500/30 border border-emerald-500/50 text-emerald-300 hover:text-white font-bold text-xs font-orbitron py-2.5 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-md">
@@ -1923,19 +1985,19 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
             return "------";
         }
 
-        function copyToClipboard(text) {
+        function copyToClipboard(text, type) {
             if (!text || text === "------") return;
 
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text).then(() => {
-                    showCustomToast(text);
-                }).catch(() => fallbackCopy(text));
+                    showCustomToast(text, type);
+                }).catch(() => fallbackCopy(text, type));
             } else {
-                fallbackCopy(text);
+                fallbackCopy(text, type);
             }
         }
 
-        function fallbackCopy(text) {
+        function fallbackCopy(text, type) {
             const textArea = document.createElement("textarea");
             textArea.value = text;
             textArea.style.position = "fixed";
@@ -1944,20 +2006,25 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
             textArea.select();
             try {
                 document.execCommand('copy');
-                showCustomToast(text);
+                showCustomToast(text, type);
             } catch (err) {
                 console.error('Copy fallback failed: ', err);
             }
             document.body.removeChild(textArea);
         }
 
-        function showCustomToast(code) {
+        function showCustomToast(text, type) {
             const toast = document.getElementById('copy-toast');
             const toastText = document.getElementById('toast-text');
             if (toast && toastText) {
-                toastText.innerText = `COPIED: ${code}`;
-                toast.classList.remove('opacity-0', 'pointer-events-none', 'scale-90');
-                toast.classList.add('opacity-100', 'scale-100');
+                const isOtp = (type === 'otp') || (!type && /^\d{4,8}$/.test(String(text).trim()));
+                if (isOtp) {
+                    toast.className = "fixed top-8 left-1/2 -translate-x-1/2 bg-[#062417] border-2 border-[#00FF88] text-[#00FF88] px-6 py-3.5 rounded-full text-xs font-bold shadow-[0_0_35px_rgba(0,255,136,0.6)] flex items-center gap-3 transition-all duration-300 z-50 backdrop-blur-xl opacity-100 scale-100";
+                    toastText.innerHTML = `<span class="font-orbitron tracking-wider text-amber-300"><i class="fa-solid fa-key mr-1"></i> ওটিপি কোড কপি হয়েছে:</span> <span class="font-mono text-white text-base font-black tracking-widest">${text}</span>`;
+                } else {
+                    toast.className = "fixed top-8 left-1/2 -translate-x-1/2 bg-[#07162C] border-2 border-cyan-400 text-cyan-300 px-6 py-3.5 rounded-full text-xs font-bold shadow-[0_0_35px_rgba(0,240,255,0.6)] flex items-center gap-3 transition-all duration-300 z-50 backdrop-blur-xl opacity-100 scale-100";
+                    toastText.innerHTML = `<span class="font-orbitron tracking-wider text-cyan-400"><i class="fa-solid fa-phone mr-1"></i> ফোন নম্বর কপি হয়েছে:</span> <span class="font-mono text-white text-base font-black tracking-widest">${text}</span>`;
+                }
                 
                 setTimeout(() => {
                     toast.classList.remove('opacity-100', 'scale-100');
