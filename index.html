@@ -331,7 +331,7 @@
             <div class="grid grid-cols-2 gap-3.5">
                 
                 <!-- Facebook Card -->
-                <div onclick="openTrafficModal('facebook')" class="cursor-pointer bg-[#0A0F1A] hover:bg-[#0E1524] border border-gray-800/80 hover:border-[#1877F2]/60 rounded-xl p-3.5 flex flex-col justify-between gap-3 relative overflow-hidden transition-all duration-300 active:scale-[0.98] group shadow-lg">
+                <div onclick="openTrafficModal('facebook')" class="cursor-pointer bg-[#0A0F1A] hover:bg-[#0E1524] border border-gray-800/80 hover:border-[#1877F2]/60 rounded-xl p-3.5 flex flex-col justify-between gap-2.5 relative overflow-hidden transition-all duration-300 active:scale-[0.98] group shadow-lg">
                     <div class="flex justify-between items-center z-10">
                         <span class="text-xs font-bold text-gray-200 flex items-center gap-1.5 font-rajdhani tracking-wider">
                             <i class="fa-brands fa-facebook text-[#1877F2] text-sm"></i> Facebook
@@ -339,22 +339,28 @@
                         <span id="fb-percentage" class="text-[10px] font-bold text-[#1877F2] bg-[#1877F2]/10 border border-[#1877F2]/30 px-1.5 py-0.5 rounded font-mono">0%</span>
                     </div>
                     
-                    <div class="flex items-baseline gap-1.5 z-10">
-                        <span id="fb-count-display" class="text-2xl font-black text-white font-mono">0</span>
-                        <span class="text-[10px] text-gray-500 font-mono uppercase tracking-wider">hits</span>
+                    <div class="flex flex-col gap-0.5 z-10">
+                        <div class="flex items-baseline gap-1.5">
+                            <span id="fb-count-display" class="text-2xl font-black text-white font-mono">0</span>
+                            <span class="text-[10px] text-gray-500 font-mono uppercase tracking-wider">hits</span>
+                        </div>
+                        <div id="fb-top-country" class="text-[10px] text-cyan-300 font-mono truncate flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span>Detecting top country...</span>
+                        </div>
                     </div>
                     
                     <div class="z-10">
                         <button class="w-full bg-[#1877F2]/20 hover:bg-[#1877F2] text-[#60a5fa] hover:text-white border border-[#1877F2]/40 text-[10px] font-bold py-2 px-2.5 rounded-lg flex items-center justify-center gap-1.5 transition-all duration-200 group-hover:shadow-[0_0_15px_rgba(24,119,242,0.4)]">
                             <i class="fa-solid fa-bolt text-xs"></i>
-                            <span>Get FB Number</span>
+                            <span id="fb-button-label">Get FB Number</span>
                         </button>
                     </div>
                     <div class="absolute bottom-0 left-0 h-[2px] bg-[#1877F2] transition-all duration-500" id="fb-progress-line" style="width: 0%"></div>
                 </div>
 
                 <!-- Instagram Card -->
-                <div onclick="openTrafficModal('instagram')" class="cursor-pointer bg-[#0A0F1A] hover:bg-[#180F1D] border border-gray-800/80 hover:border-[#E1306C]/60 rounded-xl p-3.5 flex flex-col justify-between gap-3 relative overflow-hidden transition-all duration-300 active:scale-[0.98] group shadow-lg">
+                <div onclick="openTrafficModal('instagram')" class="cursor-pointer bg-[#0A0F1A] hover:bg-[#180F1D] border border-gray-800/80 hover:border-[#E1306C]/60 rounded-xl p-3.5 flex flex-col justify-between gap-2.5 relative overflow-hidden transition-all duration-300 active:scale-[0.98] group shadow-lg">
                     <div class="flex justify-between items-center z-10">
                         <span class="text-xs font-bold text-gray-200 flex items-center gap-1.5 font-rajdhani tracking-wider">
                             <i class="fa-brands fa-instagram text-[#E1306C] text-sm"></i> Instagram
@@ -362,15 +368,21 @@
                         <span id="ig-percentage" class="text-[10px] font-bold text-[#E1306C] bg-[#E1306C]/10 border border-[#E1306C]/30 px-1.5 py-0.5 rounded font-mono">0%</span>
                     </div>
                     
-                    <div class="flex items-baseline gap-1.5 z-10">
-                        <span id="ig-count-display" class="text-2xl font-black text-white font-mono">0</span>
-                        <span class="text-[10px] text-gray-500 font-mono uppercase tracking-wider">hits</span>
+                    <div class="flex flex-col gap-0.5 z-10">
+                        <div class="flex items-baseline gap-1.5">
+                            <span id="ig-count-display" class="text-2xl font-black text-white font-mono">0</span>
+                            <span class="text-[10px] text-gray-500 font-mono uppercase tracking-wider">hits</span>
+                        </div>
+                        <div id="ig-top-country" class="text-[10px] text-pink-300 font-mono truncate flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span>Detecting top country...</span>
+                        </div>
                     </div>
                     
                     <div class="z-10">
                         <button class="w-full bg-[#E1306C]/20 hover:bg-[#E1306C] text-[#f472b6] hover:text-white border border-[#E1306C]/40 text-[10px] font-bold py-2 px-2.5 rounded-lg flex items-center justify-center gap-1.5 transition-all duration-200 group-hover:shadow-[0_0_15px_rgba(225,48,108,0.4)]">
                             <i class="fa-solid fa-bolt text-xs"></i>
-                            <span>Get IG Number</span>
+                            <span id="ig-button-label">Get IG Number</span>
                         </button>
                     </div>
                     <div class="absolute bottom-0 left-0 h-[2px] bg-gradient-to-r from-[#E1306C] to-[#F56040] transition-all duration-500" id="ig-progress-line" style="width: 0%"></div>
@@ -378,8 +390,50 @@
 
             </div>
 
+            <!-- Live Available Countries Hub (Active Zenex Matrix) -->
+            <div class="border-t border-gray-800/80 pt-3 flex flex-col gap-3">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <span class="relative flex h-2.5 w-2.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FF88] opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00FF88]"></span>
+                        </span>
+                        <span class="text-xs font-bold font-orbitron tracking-wider text-[#00FF88] uppercase">
+                            LIVE OTP AVAILABLE COUNTRIES
+                        </span>
+                    </div>
+                    <span id="live-country-count" class="text-[10px] text-cyan-300 font-mono bg-cyan-950/40 border border-cyan-800/40 px-2 py-0.5 rounded">
+                        Syncing...
+                    </span>
+                </div>
+
+                <!-- Live Country Filter Tabs -->
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-[11px] font-mono">
+                    <button onclick="filterLiveCountriesTab('all', this)" class="live-country-tab bg-cyan-500 text-slate-950 font-bold px-3 py-1 rounded-lg shrink-0 transition">
+                        🔥 All Live (<span id="tab-all-count">0</span>)
+                    </button>
+                    <button onclick="filterLiveCountriesTab('facebook', this)" class="live-country-tab bg-[#0D131F] hover:bg-gray-800 text-gray-300 font-bold px-3 py-1 rounded-lg border border-gray-800 shrink-0 transition">
+                        🔵 Facebook
+                    </button>
+                    <button onclick="filterLiveCountriesTab('instagram', this)" class="live-country-tab bg-[#0D131F] hover:bg-gray-800 text-gray-300 font-bold px-3 py-1 rounded-lg border border-gray-800 shrink-0 transition">
+                        🔴 Instagram
+                    </button>
+                    <button onclick="filterLiveCountriesTab('whatsapp', this)" class="live-country-tab bg-[#0D131F] hover:bg-gray-800 text-gray-300 font-bold px-3 py-1 rounded-lg border border-gray-800 shrink-0 transition">
+                        🟢 WhatsApp
+                    </button>
+                </div>
+
+                <!-- Live Country Grid Cards -->
+                <div id="live-countries-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div class="col-span-full py-6 text-center text-gray-500 font-mono text-xs flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-circle-notch animate-spin text-cyan-400"></i>
+                        <span>Syncing live countries from Zenex Network...</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Global / All Platforms Fast Allocation Button -->
-            <button onclick="openTrafficModal('all')" class="w-full bg-[#080C14] hover:bg-cyan-950/30 border border-cyan-500/30 hover:border-cyan-400 text-cyan-300 hover:text-white text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-sm">
+            <button onclick="openTrafficModal('all')" class="w-full bg-[#080C14] hover:bg-cyan-950/30 border border-cyan-500/30 hover:border-cyan-400 text-cyan-300 hover:text-white text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-sm mt-0.5">
                 <i class="fa-solid fa-layer-group text-cyan-400"></i>
                 <span class="font-orbitron text-[11px]">BROWSE ALL 35+ COUNTRY NETWORKS</span>
                 <i class="fa-solid fa-arrow-right text-[10px] ml-1"></i>
@@ -643,6 +697,10 @@
             "994": { name: "Azerbaijan", flag: "🇦🇿", iso: "az" },
             "996": { name: "Kyrgyzstan", flag: "🇰🇬", iso: "kg" },
             "992": { name: "Tajikistan", flag: "🇹🇯", iso: "tj" },
+            "374": { name: "Armenia", flag: "🇦🇲", iso: "am" },
+            "266": { name: "Lesotho", flag: "🇱🇸", iso: "ls" },
+            "236": { name: "Central African Republic", flag: "🇨🇫", iso: "cf" },
+            "967": { name: "Yemen", flag: "🇾🇪", iso: "ye" },
             "971": { name: "United Arab Emirates", flag: "🇦🇪", iso: "ae" },
             "966": { name: "Saudi Arabia", flag: "🇸🇦", iso: "sa" },
             "964": { name: "Iraq", flag: "🇮🇶", iso: "iq" },
@@ -1022,7 +1080,9 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
             renderSMSCards(fallbackFeed);
         }
 
-        // 2. Fetch Live Radar Platform Traffic from Zenex Engine
+        // 2. Fetch Live Radar Platform Traffic & Top Live Country Detectors
+        let currentLiveCountryFilter = 'all';
+
         async function fetchConsoleTraffic() {
             if (!APP_CONFIG.API_TOKEN) return;
 
@@ -1065,6 +1125,26 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
             if (fbBar) fbBar.style.width = `${fbPercent}%`;
             if (igBar) igBar.style.width = `${igPercent}%`;
             if (ratioEl) ratioEl.innerText = `Traffic: ${fbCount}:${igCount}`;
+
+            // 🎯 Dynamically show currently active top live country on the cards
+            const topFb = activeFbRanges && activeFbRanges.length > 0 ? activeFbRanges[0] : null;
+            const topIg = activeIgRanges && activeIgRanges.length > 0 ? activeIgRanges[0] : null;
+
+            const fbCountryEl = document.getElementById('fb-top-country');
+            const igCountryEl = document.getElementById('ig-top-country');
+            const fbBtnLabel = document.getElementById('fb-button-label');
+            const igBtnLabel = document.getElementById('ig-button-label');
+
+            if (topFb && fbCountryEl) {
+                const c = getCountryInfo(topFb.country || topFb.range);
+                fbCountryEl.innerHTML = `<span class="text-xs">${c.flag}</span> <span class="text-white font-bold">${c.name}</span> <span class="text-cyan-400 font-mono text-[9px]">(+${topFb.range})</span>`;
+                if (fbBtnLabel) fbBtnLabel.innerText = `Get ${c.name} FB Number`;
+            }
+            if (topIg && igCountryEl) {
+                const c = getCountryInfo(topIg.country || topIg.range);
+                igCountryEl.innerHTML = `<span class="text-xs">${c.flag}</span> <span class="text-white font-bold">${c.name}</span> <span class="text-pink-400 font-mono text-[9px]">(+${topIg.range})</span>`;
+                if (igBtnLabel) igBtnLabel.innerText = `Get ${c.name} IG Number`;
+            }
         }
 
         // 3. Fetch Zenex Live Active Routing Matrix
@@ -1123,9 +1203,135 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
             activeFbRanges = fb.length > 0 ? fb : all;
             activeIgRanges = ig.length > 0 ? ig : all;
 
+            renderLiveAvailableCountries();
+
             if (currentActiveApp) {
                 renderModalRangesOnly();
             }
+        }
+
+        // Live Available Countries Switcher & Renderer
+        function filterLiveCountriesTab(platform, btnEl) {
+            currentLiveCountryFilter = platform;
+            document.querySelectorAll('.live-country-tab').forEach(b => {
+                b.classList.remove('bg-cyan-500', 'text-slate-950');
+                b.classList.add('bg-[#0D131F]', 'text-gray-300');
+            });
+            if (btnEl) {
+                btnEl.classList.remove('bg-[#0D131F]', 'text-gray-300');
+                btnEl.classList.add('bg-cyan-500', 'text-slate-950');
+            }
+            renderLiveAvailableCountries();
+        }
+
+        function renderLiveAvailableCountries() {
+            const container = document.getElementById('live-countries-container');
+            const countEl = document.getElementById('live-country-count');
+            const allCountEl = document.getElementById('tab-all-count');
+            if (!container) return;
+
+            let items = allAvailableRanges || [];
+            if (currentLiveCountryFilter === 'facebook') {
+                items = activeFbRanges || [];
+            } else if (currentLiveCountryFilter === 'instagram') {
+                items = activeIgRanges || [];
+            } else if (currentLiveCountryFilter === 'whatsapp') {
+                items = allAvailableRanges.filter(it => (it.service || "").toUpperCase().includes('WHATSAPP') || (it.service || "").toUpperCase().includes('WA'));
+            }
+
+            if (allCountEl) allCountEl.innerText = allAvailableRanges.length;
+            if (countEl) countEl.innerText = `${items.length} Live Routes`;
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-8 text-center text-gray-500 font-mono text-xs">
+                        <i class="fa-solid fa-spinner animate-spin text-cyan-400 text-lg mb-2 block"></i>
+                        Connecting to Zenex live routing matrix...
+                    </div>
+                `;
+                return;
+            }
+
+            let html = "";
+            items.slice(0, 8).forEach(it => {
+                const range = it.range;
+                const cInfo = getCountryInfo(it.country || range);
+                const service = (it.service || "META").toUpperCase();
+                const hits = it.hits || 10;
+                const isHot = hits >= 30;
+
+                let platformBadgeColor = "text-cyan-400 border-cyan-800/40 bg-cyan-950/40";
+                let platformIcon = '<i class="fa-solid fa-bolt"></i>';
+                if (service.includes('FB') || service.includes('FACEBOOK') || service.includes('META')) {
+                    platformBadgeColor = "text-[#1877F2] border-[#1877F2]/40 bg-[#1877F2]/10";
+                    platformIcon = '<i class="fa-brands fa-facebook"></i>';
+                } else if (service.includes('IG') || service.includes('INSTAGRAM')) {
+                    platformBadgeColor = "text-[#E1306C] border-[#E1306C]/40 bg-[#E1306C]/10";
+                    platformIcon = '<i class="fa-brands fa-instagram"></i>';
+                } else if (service.includes('WA') || service.includes('WHATSAPP')) {
+                    platformBadgeColor = "text-[#25D366] border-[#25D366]/40 bg-[#25D366]/10";
+                    platformIcon = '<i class="fa-brands fa-whatsapp"></i>';
+                }
+
+                html += `
+                    <div class="bg-[#0A0F1A] hover:bg-[#0E1524] border border-gray-800/90 hover:border-cyan-400/50 p-3 rounded-xl flex flex-col justify-between gap-2.5 transition duration-200 shadow-md group">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center gap-2 truncate">
+                                <span class="text-xl shrink-0">${cInfo.flag}</span>
+                                <div class="truncate">
+                                    <div class="text-xs font-black font-rajdhani text-white truncate group-hover:text-cyan-300 transition">
+                                        ${cInfo.name}
+                                    </div>
+                                    <div class="text-[10px] font-mono text-cyan-300 font-bold">
+                                        +${range}
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-[9px] font-bold font-mono px-2 py-0.5 rounded border flex items-center gap-1 shrink-0 ${platformBadgeColor}">
+                                ${platformIcon} ${service}
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between items-center text-[10px] font-mono text-gray-400 pt-0.5 border-t border-gray-800/60">
+                            <span class="flex items-center gap-1 ${isHot ? 'text-amber-400 font-bold' : 'text-emerald-400'}">
+                                <span class="w-1.5 h-1.5 rounded-full ${isHot ? 'bg-amber-400 animate-ping' : 'bg-emerald-400'}"></span>
+                                ${isHot ? '🔥 LIVE OTP FLOWING' : '🟢 ACTIVE ROUTE'}
+                            </span>
+                            <span class="text-gray-500">${hits} Hits</span>
+                        </div>
+
+                        <button onclick="allocateNumberFromModal('${range}', this)" 
+                            class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-[11px] font-orbitron py-2 rounded-lg transition duration-200 shadow-md shadow-cyan-500/15 flex items-center justify-center gap-1.5 active:scale-[0.98]">
+                            <i class="fa-solid fa-bolt text-[10px]"></i>
+                            <span>GET ${cInfo.name.toUpperCase()} NUMBER</span>
+                        </button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Direct One-Click Number Allocation for any Country from Live Feed
+        async function allocateCountryFromFeed(number, countryName, btnElement) {
+            const clean = (number || "").replace(/\D/g, "");
+            let targetRange = null;
+
+            if (allAvailableRanges && allAvailableRanges.length > 0) {
+                for (const it of allAvailableRanges) {
+                    const rDigits = (it.range || "").replace(/\D/g, "");
+                    if (rDigits && (clean.startsWith(rDigits) || rDigits.startsWith(clean.slice(0, 5)))) {
+                        targetRange = it.range;
+                        break;
+                    }
+                }
+            }
+
+            if (!targetRange) {
+                targetRange = clean.length >= 6 ? clean.slice(0, 6) + "XXX" : clean + "XXX";
+            }
+
+            await allocateNumberFromModal(targetRange, btnElement);
         }
 
         // 4. Real-time Zenex SSE OTP Push Stream
@@ -1575,6 +1781,10 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
 
                         <!-- Action Buttons Grid -->
                         <div class="grid grid-cols-2 gap-2 pt-1">
+                            <button onclick="allocateCountryFromFeed('${number}', '${escapeHTML(cInfo.name)}', this)" class="col-span-2 bg-gradient-to-r from-blue-600 via-cyan-500 to-emerald-500 hover:from-blue-500 hover:to-emerald-400 text-slate-950 font-black text-xs font-orbitron py-2.5 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-md shadow-cyan-500/20 active:scale-[0.98]">
+                                <i class="fa-solid fa-bolt text-xs"></i>
+                                <span>GET ${cInfo.name.toUpperCase()} NUMBER (${cInfo.flag} এই দেশের নম্বর নিন)</span>
+                            </button>
                             <button onclick="copyToClipboard('${otpCode}')" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs font-orbitron py-2.5 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-md shadow-cyan-500/10">
                                 <i class="fa-regular fa-copy"></i>
                                 <span>COPY OTP</span>
