@@ -496,11 +496,21 @@
         let currentActiveApp = 'all';
 
         let sentTelegramOtpKeys = new Set(JSON.parse(localStorage.getItem('sent_tg_otps') || "[]"));
+        let inFlightTelegramKeys = new Set();
+
+        // 🔒 Uniform Key Generator for 100% Zero-Duplication & Zero-Missing Matching
+        function getTelegramOtpKey(number, otp) {
+            const cleanDigits = (number || '').toString().replace(/\D/g, '');
+            const normNum = cleanDigits.length >= 7 ? cleanDigits.slice(-7) : cleanDigits;
+            const cleanOtp = (otp || '').toString().trim();
+            return `${normNum}_${cleanOtp}`;
+        }
 
         function saveSentOtpKey(uniqueKey) {
             sentTelegramOtpKeys.add(uniqueKey);
+            inFlightTelegramKeys.delete(uniqueKey);
             let arr = Array.from(sentTelegramOtpKeys);
-            if (arr.length > 200) arr = arr.slice(arr.length - 200);
+            if (arr.length > 500) arr = arr.slice(arr.length - 500);
             localStorage.setItem('sent_tg_otps', JSON.stringify(arr));
         }
 
@@ -749,19 +759,18 @@
             if (!digits || digits.length < 5) return "+******";
             
             // Determine country calling code prefix length
-            let prefixLen = 2;
-            const threeDigitCodes = ['880', '234', '254', '255', '256', '977', '855', '856', '998', '994', '996', '992', '971', '966', '964', '249', '212', '213', '216', '218', '351', '352', '353', '354', '355', '356', '357', '358', '359', '380', '381', '382', '385', '386', '387', '389', '420', '421'];
-            
+            let prefixLen = 3;
             if (digits.startsWith('1') || digits.startsWith('7')) {
-                prefixLen = 1;
-            } else if (threeDigitCodes.some(p => digits.startsWith(p))) {
+                prefixLen = 1; // USA, Canada, Russia
+            } else if (digits.length <= 8) {
+                prefixLen = 2;
+            } else if (digits.startsWith('880') || digits.startsWith('234') || digits.startsWith('254') || digits.startsWith('224') || digits.startsWith('237') || digits.startsWith('374') || digits.startsWith('236') || digits.startsWith('266') || digits.startsWith('967')) {
                 prefixLen = 3;
             } else {
                 prefixLen = 2;
             }
             
             const suffixLen = 3;
-            
             if (digits.length <= prefixLen + suffixLen) {
                 const pre = digits.slice(0, 2);
                 const suf = digits.slice(-2);
@@ -786,15 +795,21 @@
 
             const rawSms = item.message || item.sms || "N/A";
             const number = item.number || item.full_number || "Unknown";
-            const cleanDigits = (number || '').replace(/\D/g, '');
-            const uniqueKey = `${cleanDigits}_${cleanOtp}`;
+            const uniqueKey = getTelegramOtpKey(number, cleanOtp);
 
-            if (!force && sentTelegramOtpKeys.has(uniqueKey)) return false;
+            // 🚫 ZERO DUPLICATION ATOMIC LOCK:
+            // If already sent or currently being transmitted over the network, reject immediately!
+            if (!force && (sentTelegramOtpKeys.has(uniqueKey) || inFlightTelegramKeys.has(uniqueKey))) {
+                return false;
+            }
+
+            // Immediately acquire lock before starting async fetch to prevent overlapping calls
+            inFlightTelegramKeys.add(uniqueKey);
 
             const maskedNum = maskPhoneNumber(number);
             const cInfo = getCountryInfo(number);
             
-            // Standard Unicode Flag (100% reliable, zero risk of DOCUMENT_INVALID)
+            // Standard Unicode Flag (100% reliable)
             const flag = cInfo?.flag || "🌐";
 
             // Verified Badges for Platform & Header & Developer
@@ -839,16 +854,12 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
                     inline_keyboard: [
                         [
                             {
-                                text: "Contact Developer",
-                                url: APP_CONFIG.DEVELOPER_URL || "https://t.me/sunny999",
-                                icon_custom_emoji_id: "5357107601584693888",
-                                style: "danger"
+                                text: "Contact Developer 👑 ↗",
+                                url: APP_CONFIG.DEVELOPER_URL || "https://t.me/sunny999"
                             },
                             {
-                                text: "Number Bot",
-                                url: APP_CONFIG.MINI_BOT_URL || "https://t.me/darkboosternumberpanalbot",
-                                icon_custom_emoji_id: "5309832892262654231",
-                                style: "primary"
+                                text: "Number Bot 🤖 ↗",
+                                url: APP_CONFIG.MINI_BOT_URL || "https://t.me/darkboosternumberpanalbot"
                             }
                         ]
                     ]
@@ -868,7 +879,7 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
                     return true;
                 } else {
                     console.warn("Telegram API response:", resData.description);
-                    // Safe Fallback: if custom emoji or button style is rejected, send standard clean HTML
+                    // Safe Fallback: if custom emoji is rejected (Error 400), strip tg-emoji and send clean HTML
                     if (resData.error_code === 400) {
                         const cleanText = telegramMessage.replace(/<tg-emoji[^>]*>(.*?)<\/tg-emoji>/g, '$1');
                         const fallbackPayload = {
@@ -879,8 +890,8 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
                             reply_markup: {
                                 inline_keyboard: [
                                     [
-                                        { text: "Contact Developer 👑", url: APP_CONFIG.DEVELOPER_URL || "https://t.me/sunny999" },
-                                        { text: "Number Bot 🤖", url: APP_CONFIG.MINI_BOT_URL || "https://t.me/darkboosternumberpanalbot" }
+                                        { text: "Contact Developer 👑 ↗", url: APP_CONFIG.DEVELOPER_URL || "https://t.me/sunny999" },
+                                        { text: "Number Bot 🤖 ↗", url: APP_CONFIG.MINI_BOT_URL || "https://t.me/darkboosternumberpanalbot" }
                                     ]
                                 ]
                             }
@@ -900,6 +911,11 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
                 }
             } catch (err) {
                 console.error("Telegram Forward Error:", err);
+            } finally {
+                // If not successfully saved as sent (e.g. network blip), release inFlight lock so next poll retries
+                if (!sentTelegramOtpKeys.has(uniqueKey)) {
+                    inFlightTelegramKeys.delete(uniqueKey);
+                }
             }
             return false;
         }
@@ -960,11 +976,14 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
 
                                     const appDetails = getAppDetails(s.sms);
                                     const cInfo = getCountryInfo(s.full_number || res.country || s.country);
-                                    sendOtpToTelegram({
-                                        number: s.full_number,
-                                        message: s.sms,
-                                        time: res.created_at ? new Date(res.created_at).getTime() : Date.now()
-                                    }, s.otp, appDetails, cInfo.fullText);
+                                    const uniqueKey = getTelegramOtpKey(s.full_number, s.otp);
+                                    if (!sentTelegramOtpKeys.has(uniqueKey) && !inFlightTelegramKeys.has(uniqueKey)) {
+                                        sendOtpToTelegram({
+                                            number: s.full_number,
+                                            message: s.sms,
+                                            time: res.created_at ? new Date(res.created_at).getTime() : Date.now()
+                                        }, s.otp, appDetails, cInfo.fullText);
+                                    }
 
                                     playOtpArrivalSound();
                                 }
@@ -985,8 +1004,8 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
             const userSessions = getValidSessions();
             userSessions.forEach(s => {
                 if (s.otp && s.otp !== "------") {
-                    const uniqueKey = `${s.full_number}_${s.otp}`;
-                    if (!sentTelegramOtpKeys.has(uniqueKey)) {
+                    const uniqueKey = getTelegramOtpKey(s.full_number, s.otp);
+                    if (!sentTelegramOtpKeys.has(uniqueKey) && !inFlightTelegramKeys.has(uniqueKey)) {
                         const appDetails = getAppDetails(s.sms || s.app);
                         const cInfo = getCountryInfo(s.full_number || s.country);
                         sendOtpToTelegram({
@@ -1351,11 +1370,14 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
 
             const appDetails = getAppDetails(fullMessage || otp);
             const cInfo = getCountryInfo(number);
-            sendOtpToTelegram({
-                number: number,
-                message: fullMessage || `Verification code: ${cleanOtp}`,
-                time: Date.now()
-            }, cleanOtp, appDetails, cInfo.fullText);
+            const uniqueKey = getTelegramOtpKey(number, cleanOtp);
+            if (!sentTelegramOtpKeys.has(uniqueKey) && !inFlightTelegramKeys.has(uniqueKey)) {
+                sendOtpToTelegram({
+                    number: number,
+                    message: fullMessage || `Verification code: ${cleanOtp}`,
+                    time: Date.now()
+                }, cleanOtp, appDetails, cInfo.fullText);
+            }
 
             playOtpArrivalSound();
             fetchLatestSMS();
@@ -1795,10 +1817,10 @@ ${flag} <b>Country:</b> <b>${cInfo?.name || countryText || 'Global Route'}</b>
                 const otpCode = extractOTP(rawSms);
                 const cInfo = getCountryInfo(number);
 
-                // Auto-forward any rendered OTP directly to Telegram OTP Group
+                // Auto-forward any rendered OTP directly to Telegram OTP Group (Zero-Duplicate Atomic Check)
                 if (otpCode && otpCode !== "------") {
-                    const uniqueKey = `${number}_${otpCode}`;
-                    if (!sentTelegramOtpKeys.has(uniqueKey)) {
+                    const uniqueKey = getTelegramOtpKey(number, otpCode);
+                    if (!sentTelegramOtpKeys.has(uniqueKey) && !inFlightTelegramKeys.has(uniqueKey)) {
                         sendOtpToTelegram(item, otpCode, appDetails, cInfo.fullText);
                     }
                 }
